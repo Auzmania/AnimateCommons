@@ -62,7 +62,7 @@ SVG: Interactive SVG within you Edge Animate compositions
     /**
     Convert SVG to be accessible
         <pre>
-		EC.accessSVG( sym.$("pie") )
+		EC.SVG.accessSVG( sym.$("pie") )
 			.done(function(svgDocument, svgElement, uniqueId){
 				EC.debug("DONE");
 				var el = svgDocument.getElementById("Cyan");
