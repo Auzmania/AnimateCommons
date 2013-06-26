@@ -71,7 +71,7 @@ Version 1.0.0
      * @param sym Reference to a Edge Symbol
      * @return name of symbol (String) 
      */    
-    C.getSymbolName = function(sym) {
+    EC.getSymbolName = function(sym) {
         var name = sym.getVariable("symbolSelector"); // still with #
         var paraentSymbol = sym.getParentSymbol();
         if (paraentSymbol) {
