@@ -97,6 +97,12 @@ SVG: Interactive SVG within you Edge Animate compositions
 
 		svgElement.onload = function() {
             var svgDocument = svgElement.getSVGDocument();
+            // Update (Inject notify function. Makes svg.js obsolete)
+            svgDocument.notify = function (ref, type) {
+                 var event = document.createEvent("CustomEvent");
+                 event.initEvent(type,true,true);
+                 ref.dispatchEvent(event);
+            }
 			// TODO return id
 			promise.resolve( svgDocument, svgElement, uniqueId );
 		};
