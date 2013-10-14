@@ -45,7 +45,7 @@ Version 1.0.0
     //------------------------------------
     // Public
     //------------------------------------
-    C.VERSION = "1.0.0";
+    C.VERSION = "1.1.0";
 
     //------------------------------------
     // Private
@@ -111,7 +111,7 @@ Version 1.0.0
 
     /**
      * Adaptive
-     * TODO: add flag: compare to width of window/document instead of stage (necessary if stage has fxied and is centered)
+     * TODO: add flag: compare to width of window/document instead of stage (necessary if stage is fixed and is centered)
      */
     EC.setAdaptiveLayouts = function(adaptiveLayouts, sym, adaptiveContainer, callback) {
         if (!adaptiveLayouts || !adaptiveLayouts.length) {
@@ -149,7 +149,7 @@ Version 1.0.0
                 // responsive container
                 var container = sym.$( adaptiveContainer );
 
-                var buffer = 20;
+                var buffer = 0; // before 1.0.3 we had a tolerance of 20px for some special cases
                 var calcLayout = null;
                 $.each( _adaptiveLayouts, function(index, layout) {
                     if(width >= layout - buffer){
