@@ -25,6 +25,8 @@
 
 /**
  * Module: Parallax
+ *
+ * Horizontal Parallax by Jacques Letesson
  */
 
 /**
@@ -44,7 +46,7 @@ Parallax Scrolling for Edge Animate
     //------------------------------------
     // Public
     //------------------------------------
-    C.VERSION = "1.0.0";
+    C.VERSION = "1.1.0";
     C.compositions = {};
     
     //------------------------------------
