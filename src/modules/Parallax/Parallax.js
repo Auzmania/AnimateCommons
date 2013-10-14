@@ -70,7 +70,9 @@ Parallax Scrolling for Edge Animate
         var stageElement = AdobeEdge.getComposition(compId).getStage().getSymbolElement();
         this.compositions[compId].stageElement = stageElement;
         var stageHeight = stageElement.height();
+		var stageWidth = stageElement.width();
         this.compositions[compId].stageHeight = stageHeight;
+        this.compositions[compId].stageWidth = stageWidth;
         var stageTop = stageElement.position().top;
         this.compositions[compId].stageTop = stageTop;
         this.compositions[compId].stageMiddle = Math.floor( (stageTop + stageHeight/2) );        
@@ -88,13 +90,17 @@ Parallax Scrolling for Edge Animate
 
     @method setup
     @param sym {Symbol} A Symbol within the affected composition  
+    @param scrollType {String} A string to define the type of scroll : vertical (default) or horizontal
     **/           
-    C.setup = function(sym) {
+    C.setup = function(sym, scrollType) {
         // Check arguments 
         if (!sym) {
             Log.error( "Error in setup(). Argument 'sym' is not optional.", LOG_GROUP );
             return;
         }
+        if(scrollType===undefined){
+			scrollType = "vertical";
+		}
         // Add composition to list (currently only one composition is supported)
         this.addComposition( sym.getComposition().compId );
         
@@ -107,16 +113,33 @@ Parallax Scrolling for Edge Animate
             //    return;
             //}
             //throttleIndex = throttleIndexInitial;
-        
-            var scrollTop = $(document).scrollTop();
+			if (scrollType == "vertical") {
+				var scrollPos = $(document).scrollTop();
+				scrollVertical();
+			} else if (scrollType == "horizontal") {
+				var scrollPos = $(document).scrollLeft();
+				scrollHorizontal()
+			}
+            
     
             // Update all compositions
-            $.each( EC.Parallax.compositions, function(compId, c) {
-                // Calculate new playhead position
-                var percentage = scrollTop / ( c.stageHeight - $(window).height() );
-                var playheadPos = Math.floor( percentage * c.duration );
-                c.stage.stop( playheadPos );
-            });
+            function scrollVertical(){
+	        	$.each( EC.Parallax.compositions, function(compId, c) {
+	                // Calculate new playhead position
+	                var percentage = scrollPos / ( c.stageHeight - $(window).height() );
+	                var playheadPos = Math.floor( percentage * c.duration );
+	                c.stage.stop( playheadPos );
+				});  
+            }
+            
+            function scrollHorizontal(){
+	        	$.each( EC.Parallax.compositions, function(compId, c) {
+	                // Calculate new playhead position
+	                var percentage = scrollPos / ( c.stageWidth - $(window).width() );
+	                var playheadPos = Math.floor( percentage * c.duration );
+	                c.stage.stop( playheadPos );
+				});   
+            }
         });
     }
 
