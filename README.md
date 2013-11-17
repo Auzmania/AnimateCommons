@@ -10,6 +10,7 @@ Current realease: 1.0.3
 ***
 
 History:
+
 [ 1.1.0 ]
 + Several bugfixes in Adaptive Layouts (buffer removed, animated symbols fix)
 + 2 Button Helper (EC.makeStaticButton() and EC.makeAnimatedButton)
