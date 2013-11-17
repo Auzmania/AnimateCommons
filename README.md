@@ -5,7 +5,7 @@
 
 ***
 
-Current realease: 1.0.3
+Current realease: 1.1.0
 
 ***
 
@@ -38,6 +38,7 @@ The Edge Commons are completely open source and therefor free to use in personal
 **Features so far: (more to come)**
 
 - Misc. Helper functions
+- Helper to simplify the creation process of buttons
 - Composition Loader to load and nest compositions
 - Parallax Scrolling with one line of code
 - Spotlight Overlay for media (images, animations and youtube)
