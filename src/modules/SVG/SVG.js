@@ -3,7 +3,7 @@
  * Dirty little Helpers for Adobe Edge
  * by Simon Widjaja
  *
- * Copyright (c) 2012 Simon Widjaja
+ * Copyright (c) 2013 Simon Widjaja
  *
  * --------------------------------------------------------------------------------------------------------------------------------------------------
  * Released under MIT license
@@ -62,7 +62,7 @@ SVG: Interactive SVG within you Edge Animate compositions
     /**
     Convert SVG to be accessible
         <pre>
-		EC.accessSVG( sym.$("pie") )
+		EC.SVG.accessSVG( sym.$("pie") )
 			.done(function(svgDocument, svgElement, uniqueId){
 				EC.debug("DONE");
 				var el = svgDocument.getElementById("Cyan");
@@ -97,6 +97,12 @@ SVG: Interactive SVG within you Edge Animate compositions
 
 		svgElement.onload = function() {
             var svgDocument = svgElement.getSVGDocument();
+            // Update (Inject notify function. Makes svg.js obsolete)
+            svgDocument.notify = function (ref, type) {
+                 var event = document.createEvent("CustomEvent");
+                 event.initEvent(type,true,true);
+                 ref.dispatchEvent(event);
+            }
 			// TODO return id
 			promise.resolve( svgDocument, svgElement, uniqueId );
 		};

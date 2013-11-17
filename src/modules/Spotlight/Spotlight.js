@@ -3,7 +3,7 @@
  * Dirty little Helpers for Adobe Edge
  * by Simon Widjaja
  *
- * Copyright (c) 2012 Simon Widjaja
+ * Copyright (c) 2013 Simon Widjaja
  *
  * --------------------------------------------------------------------------------------------------------------------------------------------------
  * Released under MIT license

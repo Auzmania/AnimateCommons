@@ -1,0 +1,4 @@
+// EdgeCommons v1.1.0 +++ Visit edgecommons.org for documentation, updates and examples +++ Copyright (c) 2013 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.
+// Input 0
+(function(f){var a=function(){};a.VERSION="1.0.0";a.accessSVG=function(b){if(b.is("div"))var a=b.css("background-image").replace("url(","").replace(")",""),a=a.replace('"',"");b.css("background-image","");var c="ec_"+Math.random().toString(36).substring(7);b.append('<embed id="'+c+'" src="'+a+'" type="image/svg+xml" width="100%" height="100%" />');var e=new jQuery.Deferred,d=document.getElementById(c);d.onload=function(){var a=d.getSVGDocument();a.notify=function(a,b){var c=document.createEvent("CustomEvent");
+c.initEvent(b,!0,!0);a.dispatchEvent(c)};e.resolve(a,d,c)};return e};f.SVG=a})(EdgeCommons);

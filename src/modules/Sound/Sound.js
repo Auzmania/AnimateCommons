@@ -3,7 +3,7 @@
  * Dirty little Helpers for Adobe Edge
  * by Simon Widjaja
  *
- * Copyright (c) 2012 Simon Widjaja
+ * Copyright (c) 2013 Simon Widjaja
  *
  * --------------------------------------------------------------------------------------------------------------------------------------------------
  * Released under MIT license
@@ -122,7 +122,7 @@ TODO: DESCRIPTION FOR SOUND
 
     /**
      * Stop sound
-     * @param soundId
+     * @param soundId (optional) if omitted all sounds stop
      */
     C.stop = function (soundId) {
         createjs.Sound.stop(soundId);

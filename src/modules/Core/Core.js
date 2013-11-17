@@ -3,7 +3,7 @@
  * Dirty little Helpers for Adobe Edge Animate
  * by Simon Widjaja and friends
  *
- * Copyright (c) 2012 Simon Widjaja
+ * Copyright (c) 2013 Simon Widjaja
  *
  * --------------------------------------------------------------------------------------------------------------------------------------------------
  * Released under MIT license
@@ -32,7 +32,7 @@
 
 /**
 The core module of EdgeCommons 
-Version 1.0.0
+Version 1.1.0
 @module Core
 **/
 (function (EC) {
@@ -45,7 +45,7 @@ Version 1.0.0
     //------------------------------------
     // Public
     //------------------------------------
-    C.VERSION = "1.0.0";
+    C.VERSION = "1.1.0";
 
     //------------------------------------
     // Private
@@ -58,6 +58,7 @@ Version 1.0.0
     // Adaptive Layouts
     var _adaptiveLayouts = null;
     var _currentAdaptiveLayout = null;
+    var _currentAdaptiveSymbol = null;
     var _adaptiveLayoutCallback = null;
 
 
@@ -69,13 +70,16 @@ Version 1.0.0
      * Get Symbol Name
      * (if name should be used in sym.getSymbol(NAME) the preceding "#" is necessary)
      * @param sym Reference to a Edge Symbol
+     * @param unique (Optional) Return full/unique name (e.g. Stage_ResponsiveElement)
      * @return name of symbol (String) 
      */    
-    C.getSymbolName = function(sym) {
+    EC.getSymbolName = function(sym, unique) {
         var name = sym.getVariable("symbolSelector"); // still with #
-        var paraentSymbol = sym.getParentSymbol();
-        if (paraentSymbol) {
-            name = name.replace(paraentSymbol.getVariable("symbolSelector")+"_", "");
+        if (!unique) {
+          var paraentSymbol = sym.getParentSymbol();
+          if (paraentSymbol) {
+              name = name.replace(paraentSymbol.getVariable("symbolSelector")+"_", "");
+          }
         }
         name = name.replace("#", "");
         return name;
@@ -111,7 +115,7 @@ Version 1.0.0
 
     /**
      * Adaptive
-     * TODO: add flag: compare to width of window/document instead of stage (necessary if stage has fxied and is centered)
+     * TODO: add flag: compare to width of window/document instead of stage (necessary if stage is fixed and is centered)
      */
     EC.setAdaptiveLayouts = function(adaptiveLayouts, sym, adaptiveContainer, callback) {
         if (!adaptiveLayouts || !adaptiveLayouts.length) {
@@ -149,7 +153,7 @@ Version 1.0.0
                 // responsive container
                 var container = sym.$( adaptiveContainer );
 
-                var buffer = 20;
+                var buffer = 0; // before 1.0.3 we had a tolerance of 20px for some special cases
                 var calcLayout = null;
                 $.each( _adaptiveLayouts, function(index, layout) {
                     if(width >= layout - buffer){
@@ -157,13 +161,17 @@ Version 1.0.0
                     }
                 });
 
-                //console.log("calcLayout: "+calcLayout);
-
                 if (_currentAdaptiveLayout != calcLayout ) {
                     //Log.debug( "Switching to: layout"+calcLayout, LOG_GROUP );
-                    _currentAdaptiveLayout = calcLayout;
+                    // Clear old layout
+                    _currentAdaptiveSymbol && _currentAdaptiveSymbol.deleteSymbol();
+                    //console.log("_currentAdaptiveSymbol: ", _currentAdaptiveSymbol);
                     container.html("");
+                    // Create new layout
                     var layoutSym = sym.createChildSymbol("layout"+calcLayout, adaptiveContainer);
+                    // Remember layout
+                    _currentAdaptiveLayout = calcLayout;
+                    _currentAdaptiveSymbol = layoutSym;
                     // Optional callback
                     if ( typeof(_adaptiveLayoutCallback) == "function" ) {
                         _adaptiveLayoutCallback( calcLayout, layoutSym );
@@ -207,15 +215,22 @@ Version 1.0.0
      *      comp.getStage().$('targetContainer').append("<hr/>HUHU  222<hr/>");
 	 *   });
      */
-    EC.loadComposition = function(src, sym) {
+    EC.loadComposition = function(src, symbolOrElement) {
         // Check arguments 
-        if (!src || !sym) {
+        if (!src || !symbolOrElement) {
             Log.error( "Error in loadComposition(). Arguments 'src' and 'sym' are not optional.", LOG_GROUP );
             return;
         }
         try {
+            // Symbol or Element
+            var el;
+            if (symbolOrElement instanceof AdobeEdge.Symbol) {
+                el = symbolOrElement.getSymbolElement();
+            }
+            else {
+                el = symbolOrElement;
+            }
             // Inject IFrame
-            var el = sym.getSymbolElement();
             var uniqueId = "ec_"+Math.random().toString(36).substring(7);
             el.html('<iframe id="'+uniqueId+'" src="'+src+'" style="overflow: hidden; width: 100%; height: 100%; margin: auto; border: 0 none; background-color: rgba(255,255,255,0)"></iframe>');
             // Create promise
@@ -235,7 +250,7 @@ Version 1.0.0
                     var innerComp = innerWindow.AdobeEdge.getComposition(compId);
                     //EC.debug("innerComp", LOG_GROUP, innerComp);
                     //innerComp.getStage().$('targetContainer').html("<hr/>TEST<hr/>");
-                    promise.resolve(innerComp, innerWindow.AdobeEdge);
+                    promise.resolve(innerComp, uniqueId, innerWindow.AdobeEdge);
                 });
             });
         } 
@@ -244,6 +259,115 @@ Version 1.0.0
         }
         return promise;
     }  
+    
+    /**
+     * makeStaticButton
+     * EXAMPLE:
+     * TODO
+     * Touch enabled
+     */
+    EC.makeStaticButton = function(sym, label, icon, clickHandler) {
+        // Search for optional element "hotspot"
+        var hotspot = sym.$("hotspot");
+		var hs$ = (hotspot[0]) ? hotspot : sym.getSymbolElement();
+		label && sym.$("label").html(label);
+        icon && sym.$("icon").css("background-image", "url("+icon+")");
+		hs$.css("cursor", "pointer");
+        if (!EC.isMobile()) {
+            hs$.on("mouseenter", function(e) {
+                sym.stop("over");
+            });
+            hs$.on("mouseleave", function(e) {
+                sym.stop("normal");
+            });
+            hs$.on("mousedown", function(e) {
+                sym.stop("down");
+            });
+            hs$.on("mouseup", function(e) {
+                sym.stop("over");
+            });
+        }
+		hs$.on(EC.CLICK_OR_TOUCH, function(e) {
+			(typeof(clickHandler) === "function") && clickHandler();
+		});
+	}    
+
+    /**
+     * makeAnimatedButton
+     * EXAMPLE:
+     * TODO
+     * Touch enabled
+     */
+    EC.makeAnimatedButton = function(sym, label, icon, clickHandler) {
+        // Search for optional element "hotspot"
+        var hotspot = sym.$("hotspot");        
+		var hs$ = (hotspot[0]) ? hotspot : sym.getSymbolElement();
+		label && sym.$("label").html(label);
+        icon && sym.$("icon").css("background-image", "url("+icon+")");
+		hs$.css("cursor", "pointer");
+        if (!EC.isMobile()) {
+            hs$.on("mouseenter", function(e) {
+                sym.play();
+            });
+            hs$.on("mouseleave", function(e) {
+                sym.playReverse();
+            });
+            hs$.on("click", function(e) {
+                (typeof(clickHandler) === "function") && clickHandler();
+            });            
+        }
+        else {
+            // Initially set state to inactive
+            sym.setVariable("animatedButtonState", "inactive");
+            hs$.on("touchstart", function(e) {
+                var isActive = (sym.getVariable("animatedButtonState") !== "inactive" );
+                if (isActive) {
+                    (typeof(clickHandler) === "function") && clickHandler();
+                    sym.setVariable("animatedButtonState", "inactive");
+                    sym.playReverse();
+                }
+                else {
+                    sym.play();
+                    sym.setVariable("animatedButtonState", "active");
+                    setTimeout(function() {
+                        if (sym.getPosition() > 0) {
+                            sym.playReverse();                                                    
+                        }
+                        sym.setVariable("animatedButtonState", "inactive");
+                    }, 2000);
+                }
+            });            
+        }
+	}
+    
+    /**
+     * isMobile
+     * @return true|false 
+     */    
+    EC.isMobile = function() {
+        return navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/iPhone|iPad|iPod/i) || navigator.userAgent.match(/Opera Mini/i) || navigator.userAgent.match(/IEMobile/i);
+    }
+    
+    /**
+     * CLICK_OR_TOUCH (Pseudo Constant)
+     * Can be used in click handler to be optimized on touch devices
+     * Example:
+     * sym.$("myButton").on(EC.CLICK_OR_TOUCH, function() {} );
+     * @return click or touchstart
+     */        
+    EC.CLICK_OR_TOUCH = (EC.isMobile()) ? "touchstart" : "click";
+    
+    
+    /**
+     * Read get parameter
+     * @param key Name of GET key     
+     * @return value of GET key 
+     */ 
+    EC.readGetParam = function(key){
+        var results = new RegExp('[\\?&]' + key + '=([^&#]*)').exec(window.location.href);
+        return (results) ? (decodeURIComponent(results[1] || 0)) : null;
+    }    
+    
     
     //------------------------------------
     // Init
