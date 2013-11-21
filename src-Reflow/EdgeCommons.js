@@ -1,10 +1,7 @@
 /*
  * EdgeCommons
- * Dirty little Helpers for Adobe Edge Animate
+ * Dirty little Helpers for Adobe Edge Reflow
  * by Simon Widjaja
- *
- * Additional Contributors:
- * Timm Jansen, Johannes Boyne
  *
  * Copyright (c) 2013 Simon Widjaja
  *
@@ -24,21 +21,6 @@
  * --------------------------------------------------------------------------------------------------------------------------------------------------
  * Additional 3rd party libraries are used. For related credits and license models take a closer look at the affected library.
  * --------------------------------------------------------------------------------------------------------------------------------------------------
- * EdgeCommons uses:
- * - Adobe Edge API
- * - Modulog
- * - YepNope
- * - SoundJS (CreateJS)
- * --------------------------------------------------------------------------------------------------------------------------------------------------
- * Features:
- * #Core
- * - Advanced Logging and Config with Modulog
- * - Loading external Scripts and Style Sheets with YepNope
- * - Injecting Data
- * #Sound
- * - Load and play sounds with SoundJS (CreateJS)
- * #Preload
- * - PreloadJS (uses by SoundJS) (CreateJS)
  */
 
 /**
@@ -56,8 +38,9 @@ TODO: DESCRIPTION FOR MASTER
     //------------------------------------
     // Public
     //------------------------------------
-    EdgeCommons.VERSION = "1.1.0";
+    EdgeCommons.VERSION = "0.0.1";
     EdgeCommons.$ = $;
+    EdgeCommons.Rf = {};
 
     //------------------------------------
     // Private
