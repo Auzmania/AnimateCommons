@@ -37,11 +37,11 @@ The Edge Commons are completely open source and therefor free to use in personal
 
 **Official Website and Documentation**
 
- [Link](http://www.edgedocks.com/edgecommons)
+ [WWW.EDGECOMMONS.ORG](http://www.edgecommons.org)
  
 **CDN Server (use Edge Commons without downloading anything) **
 
- [Link](http://cdn.edgecommons.org)
+ [CDN.EDGECOMMONS.ORG](http://cdn.edgecommons.org)
 
 **Features so far: (more to come)**
 
