@@ -39,7 +39,7 @@ The Edge Commons are completely open source and therefor free to use in personal
 
  [WWW.EDGECOMMONS.ORG](http://www.edgecommons.org)
  
-**CDN Server (use Edge Commons without downloading anything) **
+**CDN Server (use Edge Commons without downloading anything)**
 
  [CDN.EDGECOMMONS.ORG](http://cdn.edgecommons.org)
 
