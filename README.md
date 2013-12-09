@@ -38,6 +38,10 @@ The Edge Commons are completely open source and therefor free to use in personal
 **Official Website and Documentation**
 
  [Link](http://www.edgedocks.com/edgecommons)
+ 
+**CDN Server (use Edge Commons without downloading anything) **
+
+ [Link](http://cdn.edgecommons.org)
 
 **Features so far: (more to come)**
 
@@ -49,29 +53,6 @@ The Edge Commons are completely open source and therefor free to use in personal
 - Parallax Scrolling with one line of code
 - Spotlight Overlay for media (images, animations and youtube)
 - Advanced Logging (different levels, log group and additional log targets)
-- Configuration (external or internal Configuration layer)
-- Script Loader (JavaScript and CSS with simple callback)
-- Sound (integration of CreateJS/SoundJS by Grant Skinner)
-- Adaptive Layouts (Different Layouts for different Sizes)
-- Data Injection (inject Data from HTML into the Edge composition)
-- Drupal and Wordpress modules to load Edge Animate compositions and inject data easily (by Timm Jansen)
-- We've got plenty more in the pipeline ;) 
-
-**Contribute**
-
-Do you have cool extension ideas? You are welcome to join us!
-
-**License**
-
-Released under MIT license (open source)
-[Link](http://www.opensource.org/licenses/mit-license.html)
-
-***
-
-Happy Coding,
-
-Simon Widjaja and friends
-og group and additional log targets)
 - Configuration (external or internal Configuration layer)
 - Script Loader (JavaScript and CSS with simple callback)
 - Sound (integration of CreateJS/SoundJS by Grant Skinner)
