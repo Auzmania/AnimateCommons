@@ -73,11 +73,7 @@ Version 1.1.0
      * @param unique (Optional) Return full/unique name (e.g. Stage_ResponsiveElement)
      * @return name of symbol (String) 
      */    
-<<<<<<< HEAD:src-Animate/modules/Core/Core.js
     EC.getSymbolName = function(sym, unique) {
-=======
-    EC.getSymbolName = function(sym) {
->>>>>>> origin/master:src/modules/Core/Core.js
         var name = sym.getVariable("symbolSelector"); // still with #
         if (!unique) {
           var paraentSymbol = sym.getParentSymbol();
