@@ -1,4 +1,5 @@
-/*
+/**
+
  * EdgeCommons
  * Dirty little Helpers for Adobe Edge Reflow
  * by Simon Widjaja
@@ -38,7 +39,7 @@ TODO: DESCRIPTION FOR MASTER
     //------------------------------------
     // Public
     //------------------------------------
-    EdgeCommons.VERSION = "0.0.1";
+    EdgeCommons.VERSION = "0.0.0";
     EdgeCommons.$ = $;
     EdgeCommons.Rf = {};
 

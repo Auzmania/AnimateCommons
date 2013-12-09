@@ -11,10 +11,14 @@ Current realease: 1.1.0
 
 History:
 
+[ 1.1.1 ]
++ Switched to new build script with Grunt.js
+
 [ 1.1.0 ]
 + Several bugfixes in Adaptive Layouts (buffer removed, animated symbols fix)
 + 2 Button Helper (EC.makeStaticButton() and EC.makeAnimatedButton)
 + readGetParam to get fragment of GET parameter from URL
++ Helper function to detect mobile devices
 
 [ 1.0.4 ]
 + Composition Loader now supports symbols and elements as target
@@ -39,6 +43,8 @@ The Edge Commons are completely open source and therefor free to use in personal
 
 - Misc. Helper functions
 - Helper to simplify the creation process of buttons
+- Helper to handle GET parameters
+- Helper function to detect mobile devices
 - Composition Loader to load and nest compositions
 - Parallax Scrolling with one line of code
 - Spotlight Overlay for media (images, animations and youtube)

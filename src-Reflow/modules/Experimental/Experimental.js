@@ -44,7 +44,7 @@ TODO: DESCRIPTION FOR EXPERIMENTAL
     // Public
     //------------------------------------
     C.Experimental = {}; 
-    C.Experimental.VERSION = "0.0.1";
+    C.Experimental.VERSION = "0.0.2";
     
     //------------------------------------
     // Private
