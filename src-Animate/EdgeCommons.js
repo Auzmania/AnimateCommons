@@ -56,7 +56,11 @@ TODO: DESCRIPTION FOR MASTER
     //------------------------------------
     // Public
     //------------------------------------
+<<<<<<< HEAD:src-Animate/EdgeCommons.js
     EdgeCommons.VERSION = "0.0.0";
+=======
+    EdgeCommons.VERSION = "1.0.3";
+>>>>>>> origin/master:src/EdgeCommons.js
     EdgeCommons.$ = $;
 
     //------------------------------------
