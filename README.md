@@ -5,11 +5,15 @@
 
 ***
 
-Current realease: 1.1.0
+Current realease: 1.1.2
 
 ***
 
 History:
+
+[ 1.1.2 ]
++ Update to SoundJS 0.5.2 (Thanks to Matthew King)
++ Added close callback for Spotlight
 
 [ 1.1.1 ]
 + Switched to new build script with Grunt.js
