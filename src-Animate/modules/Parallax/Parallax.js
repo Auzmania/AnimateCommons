@@ -65,29 +65,34 @@ Parallax Scrolling for Edge Animate
      * Add composition to parallax watcher
      */
     C.addComposition = function(compId) {
-        // calculate static composition values
-        this.compositions[compId] = {};
-        var stage = AdobeEdge.getComposition(compId).getStage();
-        this.compositions[compId].stage = stage;
-        var stageElement = AdobeEdge.getComposition(compId).getStage().getSymbolElement();
-        this.compositions[compId].stageElement = stageElement;
-        var stageHeight = stageElement.height();
-		var stageWidth = stageElement.width();
-        this.compositions[compId].stageHeight = stageHeight;
-        this.compositions[compId].stageWidth = stageWidth;
-        var stageTop = stageElement.position().top;
-        this.compositions[compId].stageTop = stageTop;
-        this.compositions[compId].stageMiddle = Math.floor( (stageTop + stageHeight/2) );        
-        this.compositions[compId].duration = stage.getDuration();
-        
-        // Stop timeline (override autoplay)
-        stage.stop(0);
+      // Cancel if stage is not rendered yet and no height is available (creationComplete instead compositionReady)
+      if (!AdobeEdge.getComposition(compId).getStage().getSymbolElement().height()) {
+        Log.error("Height of stage is not available yet. Make sure you are using compositionReady instead of creationComplete", LOG_GROUP);
+      }
+      
+      // calculate static composition values
+      this.compositions[compId] = {};
+      var stage = AdobeEdge.getComposition(compId).getStage();
+      this.compositions[compId].stage = stage;
+      var stageElement = AdobeEdge.getComposition(compId).getStage().getSymbolElement();
+      this.compositions[compId].stageElement = stageElement;
+      var stageHeight = stageElement.height();
+      var stageWidth = stageElement.width();
+      this.compositions[compId].stageHeight = stageHeight;
+      this.compositions[compId].stageWidth = stageWidth;
+      var stageTop = stageElement.position().top;
+      this.compositions[compId].stageTop = stageTop;
+      this.compositions[compId].stageMiddle = Math.floor( (stageTop + stageHeight/2) );        
+      this.compositions[compId].duration = stage.getDuration();
+
+      // Stop timeline (override autoplay)
+      stage.stop(0);
     }
         
     /**
     Setup Parallax Scrolling for a specific composition
 
-        // e.g. in compositionReady event
+        // MUST be in compositionReady (NOT IN creationComplete)
         EC.Parallax.setup( sym );
 
     @method setup
@@ -103,6 +108,7 @@ Parallax Scrolling for Edge Animate
         if(scrollType===undefined){
 			scrollType = "vertical";
 		}
+      
         // Add composition to list (currently only one composition is supported)
         this.addComposition( sym.getComposition().compId );
         

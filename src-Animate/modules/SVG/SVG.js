@@ -71,13 +71,16 @@ SVG: Interactive SVG within you Edge Animate compositions
 					alert("DYNAMIC CLICK ON INNER PATH");
 				});				
 			});  
-        </pre>        
+        </pre>
     **/
     C.accessSVG = function(element) {
         if (element.is("div")) {
 			var imgSrc = element.css("background-image").replace("url(","").replace(")","");
 			// Remove "" in IE
 			imgSrc = imgSrc.replace("\"", "");
+		}
+        else if (element.is("img")) {
+			var imgSrc = element.attr("src");
 		}
 		//TODO: Check if is SVG
 

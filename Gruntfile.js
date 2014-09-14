@@ -10,7 +10,7 @@
 //================================================
 var customConfig = {
   an: {
-    version: "1.1.2"
+    version: "1.3.1"
   },
   rf: {
     version: "0.0.4"
@@ -47,7 +47,7 @@ module.exports = function(grunt) {
   // 
   //------------------------------------------------------
   function anBuild (fn) {
-    
+  
     // Concat
     grunt.config.set("concat", {
       options: {
@@ -63,20 +63,24 @@ module.exports = function(grunt) {
         dest: 'sprint/an/'+customConfig.an.version+'/js/max/EdgeCommons.Core.js'
       },
       an_parallax: {
-        src: ['src-Animate/EdgeCommons.js', 'src-Animate/modules/Parallax/Parallax.js'],
+        src: ['src-Animate/modules/Parallax/Parallax.js'],
         dest: 'sprint/an/'+customConfig.an.version+'/js/max/EdgeCommons.Parallax.js'
       },
       an_sound: {
-        src: ['src-Animate/EdgeCommons.js', 'src-Animate/modules/Sound/Sound.js'],
+        src: ['src-Animate/modules/Sound/Sound.js'],
         dest: 'sprint/an/'+customConfig.an.version+'/js/max/EdgeCommons.Sound.js'
       },
       an_spotlight: {
-        src: ['src-Animate/EdgeCommons.js', 'src-Animate/modules/Spotlight/Spotlight.js'],
+        src: ['src-Animate/modules/Spotlight/Spotlight.js'],
         dest: 'sprint/an/'+customConfig.an.version+'/js/max/EdgeCommons.Spotlight.js'
       },
       an_svg: {
-        src: ['src-Animate/EdgeCommons.js', 'src-Animate/modules/SVG/SVG.js'],
+        src: ['src-Animate/modules/SVG/SVG.js'],
         dest: 'sprint/an/'+customConfig.an.version+'/js/max/EdgeCommons.SVG.js'
+      },
+      an_explore: {
+        src: ['src-Animate/modules/Explore/jquery-collision.min.js', 'src-Animate/modules/Explore/Explore.js'],
+        dest: 'sprint/an/'+customConfig.an.version+'/js/max/EdgeCommons.Explore.js'
       },
     });
     
@@ -119,6 +123,10 @@ module.exports = function(grunt) {
       an_svg: {
         src: 'sprint/an/'+customConfig.an.version+'/js/max/EdgeCommons.SVG.js',
         dest: 'sprint/an/'+customConfig.an.version+'/js/min/EdgeCommons.SVG.js'
+      },
+      an_explore: {
+        src: 'sprint/an/'+customConfig.an.version+'/js/max/EdgeCommons.Explore.js',
+        dest: 'sprint/an/'+customConfig.an.version+'/js/min/EdgeCommons.Explore.js'
       }
     });
     

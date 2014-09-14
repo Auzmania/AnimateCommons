@@ -194,6 +194,7 @@ Version 1.1.0
     };
     
     /**
+     * DEPRICATED
      * Center Stage
      * TODO: additional param for horizontal/vertical
      */
@@ -232,7 +233,9 @@ Version 1.1.0
             }
             // Inject IFrame
             var uniqueId = "ec_"+Math.random().toString(36).substring(7);
-            el.html('<iframe id="'+uniqueId+'" src="'+src+'" style="overflow: hidden; width: 100%; height: 100%; margin: auto; border: 0 none; background-color: rgba(255,255,255,0)"></iframe>');
+            //el.html('<iframe id="'+uniqueId+'" src="'+src+'" style="overflow: hidden; width: 100%; height: 100%; margin: auto; border: 0 none; background-color: rgba(255,255,255,0)"></iframe>');
+            // Prevent flickering (http://css-tricks.com/prevent-white-flash-iframe/)
+            el.html('<iframe id="'+uniqueId+'" src="'+src+'" style="visibility:hidden; overflow: hidden; width: 100%; height: 100%; margin: auto; border: 0 none; background-color: rgba(255,255,255,0)" onload="this.style.visibility=\'visible\';"></iframe>');
             // Create promise
             var promise = new jQuery.Deferred();
             
@@ -266,12 +269,17 @@ Version 1.1.0
      * TODO
      * Touch enabled
      */
-    EC.makeStaticButton = function(sym, label, icon, clickHandler) {
+    EC.makeStaticButton = function(sym, label, icon, clickHandler, data) {
         // Search for optional element "hotspot"
         var hotspot = sym.$("hotspot");
 		var hs$ = (hotspot[0]) ? hotspot : sym.getSymbolElement();
 		label && sym.$("label").html(label);
         icon && sym.$("icon").css("background-image", "url("+icon+")");
+        data && sym.setVariable("data", data);
+        // Call when ready
+        if (typeof(sym.getVariable("ready")) === "function") {
+          sym.getVariable("ready")(data);  
+        }
 		hs$.css("cursor", "pointer");
         if (!EC.isMobile()) {
             hs$.on("mouseenter", function(e) {
@@ -288,7 +296,7 @@ Version 1.1.0
             });
         }
 		hs$.on(EC.CLICK_OR_TOUCH, function(e) {
-			(typeof(clickHandler) === "function") && clickHandler();
+			(typeof(clickHandler) === "function") && clickHandler(sym, data);
 		});
 	}    
 
@@ -298,12 +306,17 @@ Version 1.1.0
      * TODO
      * Touch enabled
      */
-    EC.makeAnimatedButton = function(sym, label, icon, clickHandler) {
+    EC.makeAnimatedButton = function(sym, label, icon, clickHandler, data) {
         // Search for optional element "hotspot"
         var hotspot = sym.$("hotspot");        
 		var hs$ = (hotspot[0]) ? hotspot : sym.getSymbolElement();
 		label && sym.$("label").html(label);
         icon && sym.$("icon").css("background-image", "url("+icon+")");
+        data && sym.setVariable("data", data);
+        // Call when ready
+        if (typeof(sym.getVariable("ready")) === "function") {
+          sym.getVariable("ready")(data);  
+        }      
 		hs$.css("cursor", "pointer");
         if (!EC.isMobile()) {
             hs$.on("mouseenter", function(e) {
@@ -313,7 +326,7 @@ Version 1.1.0
                 sym.playReverse();
             });
             hs$.on("click", function(e) {
-                (typeof(clickHandler) === "function") && clickHandler();
+                (typeof(clickHandler) === "function") && clickHandler(sym, data);
             });            
         }
         else {
@@ -322,7 +335,7 @@ Version 1.1.0
             hs$.on("touchstart", function(e) {
                 var isActive = (sym.getVariable("animatedButtonState") !== "inactive" );
                 if (isActive) {
-                    (typeof(clickHandler) === "function") && clickHandler();
+                    (typeof(clickHandler) === "function") && clickHandler(sym, data);
                     sym.setVariable("animatedButtonState", "inactive");
                     sym.playReverse();
                 }
@@ -368,6 +381,14 @@ Version 1.1.0
         return (results) ? (decodeURIComponent(results[1] || 0)) : null;
     }    
     
+    /**
+     * Read hash parameter (e.g. for Deep Linking)   
+     * @return hash or null
+     */ 
+    EC.readHashFromURL = function(){
+        var results = new RegExp('#([^ |^?|^&|^=]*)').exec(window.location.href);
+        return (results) ? (decodeURIComponent(results[0])) : null;    
+    }    
     
     //------------------------------------
     // Init

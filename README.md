@@ -5,11 +5,21 @@
 
 ***
 
-Current realease: 1.1.2
+Current realease: 1.3.1
 
 ***
 
 History:
+
+[ 1.3.1 ]
++ Added readHashFromURL to Core (e.g. for Deep Linking)
+
+[ 1.3.0 ]
++ loadComposition: prevent flickerin
+
+[ 1.2.0 ]
++ button helper now supports custom data object and passes sym and custom data to callback
++ button helper now supports deferred call (ready)
 
 [ 1.1.2 ]
 + Update to SoundJS 0.5.2 (Thanks to Matthew King)
