@@ -6,7 +6,7 @@
  * Additional Contributors:
  * Timm Jansen, Johannes Boyne
  *
- * Copyright (c) 2013 Simon Widjaja
+ * Copyright (c) 2014 Simon Widjaja
  *
  * --------------------------------------------------------------------------------------------------------------------------------------------------
  * Released under MIT license

@@ -5,11 +5,16 @@
 
 ***
 
-Current realease: 1.3.1
+Current realease: 1.4.0
 
 ***
 
 History:
+
+[ 1.4.0 ]
++ Parallax Update: Fix for Animate 5.x (thanks to psaunders)
++ Spotlight Update: Fix for Animate 5.x
++ Spotlight Update: Now supports https://
 
 [ 1.3.1 ]
 + Added readHashFromURL to Core (e.g. for Deep Linking)

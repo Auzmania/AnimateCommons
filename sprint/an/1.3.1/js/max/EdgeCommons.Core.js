@@ -654,12 +654,20 @@ Version 1.1.0
     
     /**
      * Read hash parameter (e.g. for Deep Linking)   
+     * Consider implementing "jQuery address" for more advanced power (http://www.asual.com/jquery/address/)
+     * Consider concept like http://www.asual.com/jquery/address/samples/crawling/#!/?page=/getting-started
+     * // Change hash proprammatically
+     * window.location.hash = "simonsays";
+     * // Listen for hash change event
+     * $(window).on("hashchange", function() {
+	 *   console.debug("HASH", window.location.hash);
+     * });
      * @return hash or null
      */ 
     EC.readHashFromURL = function(){
         var results = new RegExp('#([^ |^?|^&|^=]*)').exec(window.location.href);
-        return (results) ? (decodeURIComponent(results[0])) : null;    
-    }    
+        return (results) ? (decodeURIComponent(results[0])) : null;
+    }
     
     //------------------------------------
     // Init

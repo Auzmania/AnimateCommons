@@ -1,4 +1,4 @@
-// EdgeCommons for Edge Animate v1.3.1 +++ Visit edgecommons.org for documentation, updates and examples +++ Copyright (c) 2013 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.
+// EdgeCommons for Edge Animate v1.4.0 +++ Visit edgecommons.org for documentation, updates and examples +++ Copyright (c) 2013 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.
 
 /**
  * Modulog
@@ -200,7 +200,7 @@
  * Additional Contributors:
  * Timm Jansen, Johannes Boyne
  *
- * Copyright (c) 2013 Simon Widjaja
+ * Copyright (c) 2014 Simon Widjaja
  *
  * --------------------------------------------------------------------------------------------------------------------------------------------------
  * Released under MIT license
@@ -250,7 +250,7 @@ TODO: DESCRIPTION FOR MASTER
     //------------------------------------
     // Public
     //------------------------------------
-    EdgeCommons.VERSION = "1.3.1";
+    EdgeCommons.VERSION = "1.4.0";
     EdgeCommons.$ = $;
 
     //------------------------------------
@@ -274,7 +274,7 @@ TODO: DESCRIPTION FOR MASTER
  * Dirty little Helpers for Adobe Edge Animate
  * by Simon Widjaja and friends
  *
- * Copyright (c) 2013 Simon Widjaja
+ * Copyright (c) 2014 Simon Widjaja
  *
  * --------------------------------------------------------------------------------------------------------------------------------------------------
  * Released under MIT license
@@ -692,7 +692,7 @@ Version 1.1.0
  * Dirty little Helpers for Adobe Edge
  * by Simon Widjaja
  *
- * Copyright (c) 2013 Simon Widjaja
+ * Copyright (c) 2014 Simon Widjaja
  *
  * --------------------------------------------------------------------------------------------------------------------------------------------------
  * Released under MIT license
@@ -755,6 +755,7 @@ Parallax Scrolling for Edge Animate
      */
     C.addComposition = function(compId) {
       // Cancel if stage is not rendered yet and no height is available (creationComplete instead compositionReady)
+      
       if (!AdobeEdge.getComposition(compId).getStage().getSymbolElement().height()) {
         Log.error("Height of stage is not available yet. Make sure you are using compositionReady instead of creationComplete", LOG_GROUP);
       }
@@ -799,7 +800,7 @@ Parallax Scrolling for Edge Animate
 		}
       
         // Add composition to list (currently only one composition is supported)
-        this.addComposition( sym.getComposition().compId );
+        this.addComposition( sym.getComposition().getCompId() );
         
         // Add listener for scroll event on document
         //var throttleIndex = throttleIndexInitial = 2;
@@ -1199,8 +1200,8 @@ Spotlight: Overlay for media (e.g. Images, YouTube) or external Edge Animate com
                     height: config.height,
                     "margin-top": -0.5 * config.height
                 },
-                400,
-                "easeOutBack",
+                300,
+                null,
                 function() {
                     $("#spotlight .content", documentContext).css("display", "inline");
                     $("#spotlight .fader", documentContext).fadeOut(2000);
@@ -1221,11 +1222,11 @@ Spotlight: Overlay for media (e.g. Images, YouTube) or external Edge Animate com
             // Media Types
             switch (config.type) {
                 case "image":
-                    var src = (config.source.indexOf("http:") == -1 ) ? baseUrl + "/" + config.source : config.source;
+                    var src = (config.source.indexOf("http:") == -1 && config.source.indexOf("https:") == -1) ? baseUrl + "/" + config.source : config.source;
                     content.append('<img src="'+src+'" />');                    
                     break;
                 case "animate":
-                    var src = (config.source.indexOf("http:") == -1 ) ? baseUrl + "/" + config.source : config.source;
+                    var src = (config.source.indexOf("http:") == -1 && config.source.indexOf("https:") == -1) ? baseUrl + "/" + config.source : config.source;
                     content.append('<iframe src="'+src+'" style="overflow: hidden; width: 100%; height: 100%; margin: auto; border: 0 none;"></iframe>');                    
                     break;
                 case "youtube":
@@ -1273,8 +1274,8 @@ Spotlight: Overlay for media (e.g. Images, YouTube) or external Edge Animate com
                 "margin-top": 0,
                 opacity: 0
             },
-            400,
-            "easeOutCubic",
+            200,
+            null,
             function() {
                 $("#spotlight", documentContext).remove();
                 if (typeof(config.onClose) === "function") {
