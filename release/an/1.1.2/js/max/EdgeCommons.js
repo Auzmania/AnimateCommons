@@ -764,7 +764,7 @@ Parallax Scrolling for Edge Animate
 			scrollType = "vertical";
 		}
         // Add composition to list (currently only one composition is supported)
-        this.addComposition( sym.getComposition().compId );
+        this.addComposition( sym.composition.getCompId() );
         
         // Add listener for scroll event on document
         //var throttleIndex = throttleIndexInitial = 2;
