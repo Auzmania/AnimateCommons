@@ -3,7 +3,7 @@
 
 	"HTMLFileName":"010_CustomCSS.html",
 	"pref__general__AutoKeyframePropertiesArmed":"true",
-	"stage-Default Timeline_mark_ms":"0",
+	"viewStartY":"0",
 	"symbol_stage":{
 		"element_${Text}":{
 			"timelineColor2":"0x4fa275",
@@ -36,12 +36,6 @@
 	"CompZoomFactor":"100",
 	"StageZoomFactor":"100",
 	"pixelsPerMs":"0.2",
-	"pref__general__GenerateSmoothTransitions":"true",
-	"pref__general__AutoKeyframeProperties":"true",
-	"usedBOM":"false",
-	"nextElementColorIndex":"6",
-	"stage-Default Timeline_playhead_ms":"1000",
-	"pref__general__FilterNonAnimatedElements":"false",
 	"ModelData":"{\
 \"stage\": {\
    \"timelines\": {\
@@ -57,4 +51,10 @@
 \
    }}\
 }",
-	"viewStartY":"0"}
+	"stage-Default Timeline_playhead_ms":"1000",
+	"stage-Default Timeline_mark_ms":"0",
+	"nextElementColorIndex":"6",
+	"pref__general__GenerateSmoothTransitions":"true",
+	"pref__general__FilterNonAnimatedElements":"false",
+	"usedBOM":"false",
+	"pref__general__AutoKeyframeProperties":"true"}

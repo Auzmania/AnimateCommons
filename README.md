@@ -5,7 +5,7 @@
 
 ***
 
-Current realease: 2.0.1
+Current realease: 2.0.2
 
 ***
 

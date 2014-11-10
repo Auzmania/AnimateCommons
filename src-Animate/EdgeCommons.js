@@ -47,6 +47,21 @@ TODO: DESCRIPTION FOR MASTER
 
 @module EdgeCommons
 **/
+
+
+// Workaround to find the right $
+var ___ec$;
+try {
+  ___ec$ = $;
+}
+catch (err) {
+  ___ec$ = AdobeEdge.$;
+}
+
+
+
+
+
 (function (window, $) {
     //------------------------------------
     // Constructor
@@ -75,4 +90,7 @@ TODO: DESCRIPTION FOR MASTER
     window.EC = window.EdgeCommons = EdgeCommons;
     //Log.debug("v" + VERSION, LOG_GROUP);
 
-})(window, AdobeEdge.$);
+//})(window, AdobeEdge.$);
+//})(window, $);
+})(window, ___ec$);
+

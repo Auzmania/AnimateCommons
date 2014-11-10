@@ -46,6 +46,7 @@ Version 1.1.0
     // Public
     //------------------------------------
     C.VERSION = "1.1.0";
+    C.stylesheet = null;
 
     //------------------------------------
     // Private
@@ -420,7 +421,34 @@ Version 1.1.0
         return (results) ? (decodeURIComponent(results[1] || 0)) : null;
     }
     
-    
+    //==================================================
+    // CSS
+    // (Inspired by http://davidwalsh.name/add-rules-stylesheets)
+    //==================================================
+    function _initStylesheet() {
+      // Return if stylesheet already exists
+      if (EC.stylesheet) {
+        return;
+      }
+        
+      // Create the <style> tag
+      var style = document.createElement("style");
+
+      // Add a media (and/or media query) here if you'd like!
+      // style.setAttribute("media", "screen")
+      // style.setAttribute("media", "only screen and (max-width : 1024px)")
+      style.setAttribute("title", "EC");
+      
+      // WebKit hack :(  (see http://davidwalsh.name/add-rules-stylesheets)
+      style.appendChild(document.createTextNode(""));
+
+      // Add the <style> element to the page
+      document.head.appendChild(style);
+
+      //return style.sheet;
+      EC.stylesheet = style.sheet;
+    };
+  
     /**
      * @param: selector string
      * @param: properties object
@@ -428,19 +456,23 @@ Version 1.1.0
      * @param: sheet (optional) Not supported yet
      */    
     EC.addCSS = function (selector, properties, index, sheet) {
-        index = (index) ? index : 1; 
+        index = (index) ? index : 0; 
         
+        // Create stylesheet initially
+        _initStylesheet();
+      
         // thanks to David Walsh http://davidwalsh.name/add-rules-stylesheets
-        function _addCSSRule(sheet, selector, rules, index) {
-             if ("insertRule" in sheet) {
-                  sheet.insertRule(selector + "{" + rules + "}", index);
-             }
-             else if ("addRule" in sheet) {
-                  sheet.addRule(selector, rules, index);
-             }
-             else {
-                  //console.log("cannot add CSS");
-             }
+        function _addCSSRule(sheet, selector, rules, index) {        
+           if ("insertRule" in sheet) {
+                sheet.insertRule(selector + "{" + rules + "}", index);
+           }
+           else if ("addRule" in sheet) {
+                sheet.addRule(selector, rules, index);
+           }
+           else {
+                // Propery error logging
+                console.error("cannot add CSS");
+           }
         }
 
         var propertiesString = "";
@@ -449,7 +481,8 @@ Version 1.1.0
             propertiesString += prop+": "+properties[prop]+";";
         }
         //console.log("propertiesString: ", propertiesString);
-        _addCSSRule(document.styleSheets[0], selector, propertiesString, index);
+        //_addCSSRule(document.styleSheets[0], selector, propertiesString, index);
+        _addCSSRule(EC.stylesheet, selector, propertiesString, index);
     }
  
     

@@ -45,11 +45,8 @@ Spotlight
     /*margin-top: -200px;*/  /* 0.5 * height */
 
     background-color: white;
-    
     overflow: hidden;
-    
     border: solid;
-    
     cursor: default;
 }
 
@@ -65,4 +62,43 @@ Spotlight
     width: 100%;
     height: 100%;
     background-color: white;
+}
+
+
+
+/* TEMP: SPOTLIGHT */
+
+#spotlight .animated {
+  opacity: 1;
+  -webkit-transition: opacity 0.3s, -webkit-transform 0.4s;
+     -moz-transition: opacity 0.3s, -moz-transform 0.4s;
+      -ms-transition: opacity 0.3s, -ms-transform 0.4s;
+          transition: opacity 0.3s, transform 0.4s;
+}
+#spotlight .animated.transparent {
+  opacity: 0;
+}
+
+#spotlight .base {
+  -webkit-transition: opacity 0.3s, -webkit-transform 0.4s;
+     -moz-transition: opacity 0.3s, -moz-transform 0.4s;
+      -ms-transition: opacity 0.3s, -ms-transform 0.4s;
+          transition: opacity 0.3s, transform 0.4s;
+  
+  -webkit-transition-timing-function: ease;
+     -moz-transition-timing-function: ease;
+      -ms-transition-timing-function: ease;
+          transition-timing-function: ease;
+
+  -webkit-transform: scale(0);
+     -moz-transform: scale(0);
+      -ms-transform: scale(0);
+          transform: scale(0);
+}
+
+#spotlight .base.finalscale {
+  -webkit-transform: scale(1);
+     -moz-transform: scale(1);
+      -ms-transform: scale(1);
+          transform: scale(1);
 }

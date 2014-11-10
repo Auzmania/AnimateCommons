@@ -16,8 +16,7 @@
         resources = [
         ],
         scripts = [
-            js+"jquery-2.0.3.min.js",
-            "http://localhost/Go/EdgeCommons/Codebase/sprint/an/2.0.1/js/max/EdgeCommons.js"
+            "http://localhost/Go/EdgeCommons/Codebase/sprint/an/2.0.2/js/max/EdgeCommons.js"
         ],
         symbols = {
             "stage": {
@@ -69,7 +68,7 @@
                     style: {
                         '${Stage}': {
                             isStage: true,
-                            rect: [undefined, undefined, '550px', '400px'],
+                            rect: ['null', 'null', '550px', '400px', 'auto', 'auto'],
                             overflow: 'hidden',
                             fill: ["rgba(255,255,255,1)"]
                         }

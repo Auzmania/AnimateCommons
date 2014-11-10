@@ -14,34 +14,46 @@ var Composition = Edge.Composition, Symbol = Edge.Symbol; // aliases for commonl
       
       
       Symbol.bindElementAction(compId, symbolName, "document", "compositionReady", function(sym, e) {
+         //yepnope("http://cdn.edgecommons.org/an/1.4.0/css/style.css");
+         yepnope("http://localhost/Dropbox/Aktiv/Intern/EdgeDocks/Products/EdgeCommons/Codebase/sprint/an/2.0.2/css/style.css");
+         
          sym.$("runButton").bind("click", function() {
-         	try {
-         
-         	new AdobeEdge.PropertyTween("transform", "translateY", sym.$("RoundRect2"), "0px", "200px");
-         	return;
          
          
+         
+         
+         	//new AdobeEdge.PropertyTween("transform", "translateY", sym.$("RoundRect2"), "0px", "200px");
+         	//return;
+         
+         /*
          		EC.addCSS(".test", {
          			"border": 				"10px dotted red !important",
          			"background-color": 	"lightblue !important",
          		});
+         */
          
          		//EC.Spotlight.setup();
          
+         
          		var config = {
          			type: "image",
-         			source: "http://www.gravatar.com/avatar/08cfcb3781a28f359562545978e8c73e.jpg?d=mm",
-         			width: 900,
-         			height: 500
+         			source: "http://www.blodpudding.com/Bilder/Dave_Ad/Dave_005.jpg",
+         			//source: "http://www.edgedocks.com/sites/default/files/_egd_spotlight_img.jpg",
+         			width: 500,
+         			height: 350
          		};
-         		EC.Spotlight.open(config);		
+         		EC.Spotlight.open(config);
          
-         
+         	try {
          	}
          	catch(err) {
          		console.error(err.toString());
          	}
          });
+         
+         
+         //https://code.jquery.com/jquery-2.1.1.min.js
+         //http://localhost/Go/EdgeCommons/Codebase/sprint/an/2.0.2/js/max/EdgeCommons.js
 
       });
       //Edge binding end

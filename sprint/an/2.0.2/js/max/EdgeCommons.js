@@ -241,6 +241,21 @@ TODO: DESCRIPTION FOR MASTER
 
 @module EdgeCommons
 **/
+
+
+// Workaround to find the right $
+var ___ec$;
+try {
+  ___ec$ = $;
+}
+catch (err) {
+  ___ec$ = AdobeEdge.$;
+}
+
+
+
+
+
 (function (window, $) {
     //------------------------------------
     // Constructor
@@ -269,7 +284,10 @@ TODO: DESCRIPTION FOR MASTER
     window.EC = window.EdgeCommons = EdgeCommons;
     //Log.debug("v" + VERSION, LOG_GROUP);
 
-})(window, AdobeEdge.$);
+//})(window, AdobeEdge.$);
+//})(window, $);
+})(window, ___ec$);
+
 ;/**
  * EdgeCommons
  * Dirty little Helpers for Adobe Edge Animate
@@ -318,6 +336,7 @@ Version 1.1.0
     // Public
     //------------------------------------
     C.VERSION = "1.1.0";
+    C.stylesheet = null;
 
     //------------------------------------
     // Private
@@ -692,7 +711,34 @@ Version 1.1.0
         return (results) ? (decodeURIComponent(results[1] || 0)) : null;
     }
     
-    
+    //==================================================
+    // CSS
+    // (Inspired by http://davidwalsh.name/add-rules-stylesheets)
+    //==================================================
+    function _initStylesheet() {
+      // Return if stylesheet already exists
+      if (EC.stylesheet) {
+        return;
+      }
+        
+      // Create the <style> tag
+      var style = document.createElement("style");
+
+      // Add a media (and/or media query) here if you'd like!
+      // style.setAttribute("media", "screen")
+      // style.setAttribute("media", "only screen and (max-width : 1024px)")
+      style.setAttribute("title", "EC");
+      
+      // WebKit hack :(  (see http://davidwalsh.name/add-rules-stylesheets)
+      style.appendChild(document.createTextNode(""));
+
+      // Add the <style> element to the page
+      document.head.appendChild(style);
+
+      //return style.sheet;
+      EC.stylesheet = style.sheet;
+    };
+  
     /**
      * @param: selector string
      * @param: properties object
@@ -700,19 +746,23 @@ Version 1.1.0
      * @param: sheet (optional) Not supported yet
      */    
     EC.addCSS = function (selector, properties, index, sheet) {
-        index = (index) ? index : 1; 
+        index = (index) ? index : 0; 
         
+        // Create stylesheet initially
+        _initStylesheet();
+      
         // thanks to David Walsh http://davidwalsh.name/add-rules-stylesheets
-        function _addCSSRule(sheet, selector, rules, index) {
-             if ("insertRule" in sheet) {
-                  sheet.insertRule(selector + "{" + rules + "}", index);
-             }
-             else if ("addRule" in sheet) {
-                  sheet.addRule(selector, rules, index);
-             }
-             else {
-                  //console.log("cannot add CSS");
-             }
+        function _addCSSRule(sheet, selector, rules, index) {        
+           if ("insertRule" in sheet) {
+                sheet.insertRule(selector + "{" + rules + "}", index);
+           }
+           else if ("addRule" in sheet) {
+                sheet.addRule(selector, rules, index);
+           }
+           else {
+                // Propery error logging
+                console.error("cannot add CSS");
+           }
         }
 
         var propertiesString = "";
@@ -721,7 +771,8 @@ Version 1.1.0
             propertiesString += prop+": "+properties[prop]+";";
         }
         //console.log("propertiesString: ", propertiesString);
-        _addCSSRule(document.styleSheets[0], selector, propertiesString, index);
+        //_addCSSRule(document.styleSheets[0], selector, propertiesString, index);
+        _addCSSRule(EC.stylesheet, selector, propertiesString, index);
     }
  
     
@@ -1153,14 +1204,14 @@ Spotlight: Overlay for media (e.g. Images, YouTube) or external Edge Animate com
             
           
             // Add DOM elements
-            var tpl = '<div id="spotlight"> <div class="background"> </div> </div>';
+            var tpl = '<div id="spotlight"> <div class="background animated transparent"> </div> </div>';
             $("body", documentContext).append(tpl);
             var tpl = '<div class="base"></div>';
             $("#spotlight .background", documentContext).append(tpl);
-            var tpl = '<div class="close-button"></div>';
+            var tpl = '<div class="close-button animated transparent"></div>';
             $("#spotlight .background", documentContext).append(tpl);
             
-          
+           
             // Place close button
             var closeButton = $("#spotlight .close-button", documentContext);
             closeButton.css("margin-left", (0.5*config.width) - 15 + (config.borderWidth) )
@@ -1176,7 +1227,8 @@ Spotlight: Overlay for media (e.g. Images, YouTube) or external Edge Animate com
                 .css("border-width", config.borderWidth)
                 .css("border-color", config.borderColor)
                 .css("border-radius", 5);
-            
+
+          /*
             base.animate({
                     width: config.width,
                     "margin-left": -0.5 * config.width,
@@ -1191,7 +1243,41 @@ Spotlight: Overlay for media (e.g. Images, YouTube) or external Edge Animate com
                     $("#spotlight .close-button", documentContext).fadeIn();
                 }
             );
+          */ 
+           
+   
+            // TEMP
+            base.css({
+                width: config.width,
+                "margin-left": -0.5 * config.width,
+                height: config.height,
+                "margin-top": -0.5 * config.height
+            });
+          
+          
+          
+            setTimeout( function() {
+              // Fade/Scale in
+              $("#spotlight .background").removeClass("transparent");
+            }, 10);
+          
+            setTimeout( function() {
+              // Fade/Scale in
+              base.addClass("finalscale");
+              $("#spotlight .content", documentContext).css("display", "inline");
+              $("#spotlight .close-button", documentContext).css("display", "block");
+            }, 100);  
+          
+            setTimeout( function() {
+              $("#spotlight .fader", documentContext).css("opacity", 0);
+              $("#spotlight .close-button", documentContext).removeClass("transparent");
+            }, 500);
+        
+          
             
+          
+          
+          
           
             // Inject content
             base.append('<div class="content"></div>');
@@ -1220,11 +1306,14 @@ Spotlight: Overlay for media (e.g. Images, YouTube) or external Edge Animate com
                     break;
             }
 
-            content.append('<div class="fader"></div>');
+            content.append('<div class="fader animated"></div>');
             var fader = $("#spotlight .fader", documentContext);
+              
+          
+
             
             // On click
-            $("#spotlight .background", documentContext).click( function() {
+            $("#spotlight .background", documentContext).bind("click", function() {
                 EC.Spotlight.close( config, documentContext );
             });
             return true;
@@ -1248,9 +1337,13 @@ Spotlight: Overlay for media (e.g. Images, YouTube) or external Edge Animate com
         
         $("#spotlight .content", documentContext).remove();
         $("#spotlight .close-button", documentContext).remove();
-        $("#spotlight .background", documentContext).fadeOut(400);
+        
+        //$("#spotlight .background", documentContext).fadeOut(400);
+        $("#spotlight .background", documentContext).css("opacity", 0);
         
         var base = $("#spotlight .base", documentContext);
+        
+        /*
         base.animate({
                 width: 0,
                 "margin-left": 0,
@@ -1266,7 +1359,16 @@ Spotlight: Overlay for media (e.g. Images, YouTube) or external Edge Animate com
                   config.onClose(config, documentContext);
                 }
             }
-        );        
+        ); 
+        */
+        base.removeClass("finalscale");
+
+        setTimeout(function() {
+          $("#spotlight", documentContext).remove();
+          if (typeof(config.onClose) === "function") {
+            config.onClose(config, documentContext);
+          }          
+        }, 300);      
     }
         
     //------------------------------------
