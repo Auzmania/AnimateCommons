@@ -1,4 +1,276 @@
+// EdgeCommons for Edge Animate v2.0.1 +++ Visit edgecommons.org for documentation, updates and examples +++ Copyright (c) 2015 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.
+
 /**
+ * Modulog
+ * by Simon Widjaja
+ **/
+(function (window, $) {
+    //------------------------------------
+    // Constructor
+    //------------------------------------
+    var C = function () {
+    };
+    //------------------------------------
+    // Public
+    //------------------------------------
+    C.VERSION = "0.0.2";
+    C.$ = $;
+    //------------------------------------
+    // Private
+    //------------------------------------
+
+    //------------------------------------
+    // Init
+    //------------------------------------
+    window.Modulog = C;
+})(window, AdobeEdge.$);
+
+
+/**
+ * ModulogLog
+ * by Simon Widjaja
+ */
+(function (Modulog) {
+    //------------------------------------
+    // Constructor
+    //------------------------------------
+    var C = function () {
+    };
+    //------------------------------------
+    // Public
+    //------------------------------------
+    C.VERSION = "0.0.2";
+    C.LEVEL_NONE = 0;
+    C.LEVEL_ERROR = 1;
+    C.LEVEL_WARN = 2;
+    C.LEVEL_INFO = 3;
+    C.LEVEL_DEBUG = 4;
+    C.level = C.LEVEL_DEBUG; // Default Log level
+    //------------------------------------
+    // Private
+    //------------------------------------
+    // jQuery
+    var $ = Modulog.$;
+
+    var additionalLogTarget = null;
+    //------------------------------------
+    // Methods
+    //------------------------------------
+    C.addLogTarget = function (loggerCallback) {
+        if (typeof loggerCallback === "function") {
+            additionalLogTarget = loggerCallback;
+        }
+    };
+    C.debug = function (msg, group, object) {
+        if (ModulogLog.level >= ModulogLog.LEVEL_DEBUG) {
+            var out = "[ DEBUG " + ((group) ? "| " + group + " " : "") + "] " + msg;
+            if ((typeof console != "undefined") && (typeof console.debug != "undefined")) {
+                (object) ? console.debug(out, object) : console.debug(out);
+            } 
+            else if ((typeof console != "undefined") && (typeof console.info != "undefined")) {
+                (object) ? console.info(out, object) : console.info(out);                
+            }
+            ModulogLog.__delegate(out, object);
+        }
+    };
+    C.info = function (msg, group, object) {
+        if (ModulogLog.level >= ModulogLog.LEVEL_INFO) {
+            var out = "[ INFO " + ((group) ? "| " + group + " " : "") + "] " + msg;
+            if ((typeof console != "undefined") && (typeof console.info != "undefined")) {
+                (object) ? console.info(out, object) : console.info(out);
+            }
+            ModulogLog.__delegate(out, object);
+        }
+    };
+    C.warn = function (msg, group, object) {
+        if (ModulogLog.level >= ModulogLog.LEVEL_WARN) {
+            var out = "[ WARN " + ((group) ? "| " + group + " " : "") + "] " + msg;
+            if ((typeof console != "undefined") && (typeof console.warn != "undefined")) {
+                (object) ? console.warn(out, object) : console.warn(out);
+            }
+            ModulogLog.__delegate(out, object);
+        }
+    };
+    C.error = function (msg, group, object) {
+        if (ModulogLog.level >= ModulogLog.LEVEL_ERROR) {
+            var out = "[ ERROR " + ((group) ? "| " + group + " " : "") + "] " + msg;
+            if ((typeof console != "undefined") && (typeof console.error != "undefined")) {
+                (object) ? console.error(out, object) : console.error(out);
+            }
+            ModulogLog.__delegate(out, object);
+        }
+    };
+    C.__delegate = function (msg, object) {
+        if (additionalLogTarget) {
+            (object) ? additionalLogTarget(msg + " : " + object.toString()) : additionalLogTarget(msg);
+        }
+    };
+    //------------------------------------
+    // Init
+    //------------------------------------
+    window.Log = window.MLog = window.ModulogLog = C;
+})(window.Modulog);
+
+
+/**
+ * ModulogConfig
+ * by Simon Widjaja
+ * Usage:
+ * - Config.init(configObject);
+ * - Config.init(url, callback);
+ * - Config.set("topic.subtopic.value", value);
+ * - Config.get("topic.subtopic.value");
+ */
+(function (Modulog) {
+    //------------------------------------
+    // Constructor
+    //------------------------------------
+    var C = function () {
+    };
+    //------------------------------------
+    // Public
+    //------------------------------------
+    C.VERSION = "0.0.1";
+    //------------------------------------
+    // Private
+    //------------------------------------
+    // jQuery
+    var $ = Modulog.$;
+    // Config
+    var config = null;
+    // Logger
+    var Log = ModulogLog;
+    var LOG_GROUP = "Modulog | ModulogConfig";
+
+    //------------------------------------
+    // Methods
+    //------------------------------------
+    C.get = function (path) {
+        var el = path.split(".");
+        var value = config;
+        for (var i = 0; i < el.length; i++) {
+            var p = el[i];
+            if (!value.hasOwnProperty(p)) {
+                ModulogLog.warn("Config value not found: " + path, "CONFIG");
+            }
+            value = value[p];
+        }
+        return value;
+    };
+    C.set = function (path, value) {
+        var el = path.split(".");
+        var target = config;
+        for (var i = 0; i < el.length - 1; i++) {
+            target = target[el[i]];
+        }
+        target[el.pop()] = value;
+    };
+    C.init = function (param, readyCallback) {
+        // URL
+        if ((typeof(param) === "string") && (jQuery)) {          
+            $.getJSON(param, function (data) {
+                config = data;
+                if (typeof(readyCallback) === "function") {
+                    readyCallback();
+                }
+            });
+        }
+        // Config Object
+        else if (typeof(param) === "object") {
+            config = param;
+        }
+        // Error
+        else {
+            Log.error("Could not init config. init() function expects config object or url to config.js. " +
+                "Latter needs jQuery to be initialized before.", LOG_GROUP);
+        }
+    };
+    //------------------------------------
+    // Init
+    //------------------------------------
+    window.Config = window.MConfig = window.ModulogConfig = C;
+})(window.Modulog);
+
+
+;/*
+ * EdgeCommons
+ * Dirty little Helpers for Adobe Edge Animate
+ * by Simon Widjaja
+ *
+ * Additional Contributors:
+ * Timm Jansen, Johannes Boyne
+ *
+ * Copyright (c) 2014 Simon Widjaja
+ *
+ * --------------------------------------------------------------------------------------------------------------------------------------------------
+ * Released under MIT license
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ * --------------------------------------------------------------------------------------------------------------------------------------------------
+ * Additional 3rd party libraries are used. For related credits and license models take a closer look at the affected library.
+ * --------------------------------------------------------------------------------------------------------------------------------------------------
+ * EdgeCommons uses:
+ * - Adobe Edge API
+ * - Modulog
+ * - YepNope
+ * - SoundJS (CreateJS)
+ * --------------------------------------------------------------------------------------------------------------------------------------------------
+ * Features:
+ * #Core
+ * - Advanced Logging and Config with Modulog
+ * - Loading external Scripts and Style Sheets with YepNope
+ * - Injecting Data
+ * #Sound
+ * - Load and play sounds with SoundJS (CreateJS)
+ * #Preload
+ * - PreloadJS (uses by SoundJS) (CreateJS)
+ */
+
+/**
+TODO: DESCRIPTION FOR MASTER
+
+
+@module EdgeCommons
+**/
+(function (window, $) {
+    //------------------------------------
+    // Constructor
+    //------------------------------------
+    var EdgeCommons = function () {
+    };
+
+    //------------------------------------
+    // Public
+    //------------------------------------
+    EdgeCommons.VERSION = "2.0.1";
+    EdgeCommons.$ = $;
+
+    //------------------------------------
+    // Private
+    //------------------------------------
+    var LOG_GROUP = "EdgeCommons";
+
+    //------------------------------------
+    // Methods
+    //------------------------------------
+
+    //------------------------------------
+    // Init
+    //------------------------------------
+    window.EC = window.EdgeCommons = EdgeCommons;
+    //Log.debug("v" + VERSION, LOG_GROUP);
+
+})(window, AdobeEdge.$);
+;/**
  * EdgeCommons
  * Dirty little Helpers for Adobe Edge Animate
  * by Simon Widjaja and friends
@@ -148,10 +420,6 @@ Version 1.1.0
         }
     };
 
-    //==================================================
-    // Adaptive Layouts
-    //==================================================  
-  
     /**
      * Adaptive
      * @param useWindowInsteadOfStage If true the window width is used for calculations (necessary if you have a fiex stage that is centered (e.g. with EC.centerStage())) (default: false)
@@ -297,10 +565,6 @@ Version 1.1.0
         }
         return promise;
     }  
-    
-    //==================================================
-    // Buttons
-    //==================================================    
     
     /**
      * makeStaticButton
@@ -490,97 +754,6 @@ Version 1.1.0
       }
       $("head").append('<meta name="viewport" content="'+content+'">');
     }
-
-    /**
-     * Get all children of a symbols (recursive or immediate children only)
-     *  e.g. 
-     *		console.log( "stage: ", getChildSymbols(sym) );
-     *		console.log( "stage: ", getChildSymbols(sym, false) );
-     *		console.log( "MySymbol1: ", getChildSymbols(sym.getSymbol("MySymbol1")) );
-     */
-    EC.getChildSymbols = function (sym, recursive, result) {
-        // Arguments and defaults
-        recursive = (recursive!==false) ? true : false;
-        // Prepare result
-        result = (result) ? result : [];
-        var immediateChildren = sym.getChildSymbols();
-        if (immediateChildren.length>0) {
-            var i = 0,
-                len = immediateChildren.length;		
-            for (i; i<len; i++) {
-                result.push(immediateChildren[i]);
-                recursive && EC.getChildSymbols(immediateChildren[i], recursive, result);
-            }
-        }
-        return result;
-    }    
-    
-    
-    //==================================================
-    // Pause/Unpause
-    //==================================================
-    
-    /**
-     * Pause/Unpause (internal function)
-     * @param {Symbol} sym - symbol
-     * @param {Boolean} flag - pause (false) or unpause (true)
-     * @param {Boolean} recursive - pause all sub symbols
-     */
-    function _handlePause(sym, flag, recursive) {
-        try {
-            // Gather effected symbol instances
-            var symbols = EC.getChildSymbols(sym, recursive);
-
-            // Find all symbol instances
-            var comp = sym.getComposition(),
-                symbols = comp.getSymbols();
-            for (var i in symbols) {
-                var s = symbols[i]
-                     isPlaying = s.isPlaying();
-                if (!flag) { // pause	
-                    // Save playback state
-                    var playState = (isPlaying) ? ((s.isPlayDirectionReverse()) ? "playingReverse" : "playing") : "stopped";
-                    s.setVariable("_ec_playState", playState);
-                    // Stop symbol
-                    s.stop();			
-                }
-                else { // unpause
-                    // Get playback state
-                    var playState = s.getVariable("_ec_playState");
-                    // If symbol was playing before start playing again
-                    if (playState === "playing") {
-                        s.play();
-                    }
-                    else if (playState === "playingReverse") {
-                        s.playReverse();
-                    }
-                }
-            }
-        }
-        catch (err) {
-            // TODO: Add real logging
-            console.error(err.toString());
-        }	
-    }
-  
-    /**
-     * Pause a symbol
-     * @param {Symbol} sym - symbol
-     * @param {Boolean} recursive - pause all sub symbols
-     */
-    EC.pause = function(sym, recursive) {
-        _handlePause(sym, false, recursive);
-    }
-    
-    /**
-     * Unpause a symbol
-     * @param {Symbol} sym - symbol
-     * @param {Boolean} recursive - pause all sub symbols
-     */
-    EC.unpause = function(sym, recursive) {
-        _handlePause(sym, true, recursive);
-    }
-  
     
     //------------------------------------
     // Init

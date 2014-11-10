@@ -44,6 +44,7 @@
 /**
 TODO: DESCRIPTION FOR MASTER
 
+
 @module EdgeCommons
 **/
 (function (window, $) {
@@ -74,4 +75,4 @@ TODO: DESCRIPTION FOR MASTER
     window.EC = window.EdgeCommons = EdgeCommons;
     //Log.debug("v" + VERSION, LOG_GROUP);
 
-})(window, jQuery);
+})(window, AdobeEdge.$);

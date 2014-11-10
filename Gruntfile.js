@@ -10,13 +10,12 @@
 //================================================
 var customConfig = {
   an: {
-    version: "1.4.0"
+    version: "2.0.2" 
   },
   rf: {
     version: "0.0.4"
   }
 };
-
 
 //================================================
 //================================================
@@ -52,10 +51,10 @@ module.exports = function(grunt) {
     grunt.config.set("concat", {
       options: {
         separator: ';',
-        banner: '// EdgeCommons for Edge Animate v'+customConfig.an.version+' +++ Visit edgecommons.org for documentation, updates and examples +++ Copyright (c) 2013 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.\n\n'
+        banner: '// EdgeCommons for Edge Animate v'+customConfig.an.version+' +++ Visit edgecommons.org for documentation, updates and examples +++ Copyright (c) 2015 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.\n\n'
       },
       an_allinone: {
-        src: ['src-Animate/libs/Modulog-0.0.2.js', 'src-Animate/EdgeCommons.js', 'src-Animate/modules/Core/Core.js', 'src-Animate/modules/Parallax/Parallax.js', 'src-Animate/modules/Sound/Sound.js', 'src-Animate/modules/Spotlight/Spotlight.js', 'src-Animate/modules/SVG/SVG.js'],
+        src: ['src-Animate/libs/Modulog-0.0.2.js', 'src-Animate/EdgeCommons.js', 'src-Animate/modules/Core/Core.js', 'src-Animate/modules/Parallax/Parallax.js', 'src-Animate/modules/Spotlight/Spotlight.js', 'src-Animate/modules/SVG/SVG.js'],
         dest: 'sprint/an/'+customConfig.an.version+'/js/max/EdgeCommons.js'
       },
       an_core: {

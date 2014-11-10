@@ -21,7 +21,7 @@
     // Init
     //------------------------------------
     window.Modulog = C;
-})(window, jQuery);
+})(window, AdobeEdge.$);
 
 
 /**
