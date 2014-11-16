@@ -29,7 +29,6 @@
  * Module: Sound
  * Bridge to the great framework by Grant Skinner "CreateJS"
  */
-
 /**
 TODO: DESCRIPTION FOR SOUND
 
@@ -38,32 +37,31 @@ TODO: DESCRIPTION FOR SOUND
 @main EdgeCommons
 **/
 (function (EC) {
-    //------------------------------------
-    // Constructor
-    //------------------------------------
-    var C = function () {
-    };
+  //------------------------------------
+  // Constructor
+  //------------------------------------
+  var C = function () {};
 
-    //------------------------------------
-    // Public
-    //------------------------------------
-    C.VERSION = "1.0.1";
-    C.soundManifest = null;
+  //------------------------------------
+  // Public
+  //------------------------------------
+  C.VERSION = "1.0.1";
+  C.soundManifest = null;
 
-    //------------------------------------
-    // Private
-    //------------------------------------
-    // jQuery
-    var $ = EC.$;
-    // Logger
-    var Log = ModulogLog;
-    var LOG_GROUP = "EdgeCommons | Sound";
-    var queue = null;
+  //------------------------------------
+  // Private
+  //------------------------------------
+  // jQuery
+  var $ = EC.$;
+  // Logger
+  var Log = ModulogLog;
+  var LOG_GROUP = "EdgeCommons | Sound";
+  var queue = null;
 
-    //------------------------------------
-    // Methods
-    //------------------------------------
-    /**
+  //------------------------------------
+  // Methods
+  //------------------------------------
+  /**
     @method getQueue
     Get reference to loading queue. Can be used to register events:
         queue.addEventListener("complete", loadComplete);
@@ -71,11 +69,11 @@ TODO: DESCRIPTION FOR SOUND
         queue.addEventListener("error",handleFileError);
         queue.addEventListener("progress",handleProgress);
     */
-    C.getQueue = function() {
-        return queue;
-    }
-    
-    /**
+  C.getQueue = function () {
+    return queue;
+  }
+
+  /**
     Setup SoundJS and load audio files
     @method setup
     @param manifest {Array} The manifest with all media information
@@ -89,52 +87,52 @@ TODO: DESCRIPTION FOR SOUND
     @param [loadComplete] {Object} Callback for complete (loading) event
     @param [handleFileError] {Object} Callback for loading error event
     */
-    C.setup = function (manifest, loadComplete, handleFileError) {
-        try {
-            // Argument manifest is not optional
-            if (!manifest) {
-                Log.error("Sound.setup() failed: manifest argument is not optional", LOG_GROUP);
-                return;
-            }
-            // Instantiate a queue.
-			queue = new createjs.LoadQueue();
-			queue.installPlugin(createjs.Sound);
-            if ( loadComplete ) {
-                queue.addEventListener("complete", loadComplete);
-            }
-			if (handleFileError) {
-                queue.addEventListener("error", handleFileError);
-            }
-			//queue.addEventListener("fileload", fileComplete);
-			//queue.addEventListener("progress",handleProgress);
-			queue.loadManifest(manifest);	
-        } catch (error) {
-            Log.error("Error in setup(): " + error.toString(), LOG_GROUP, error);
-        }
-    };
+  C.setup = function (manifest, loadComplete, handleFileError) {
+    try {
+      // Argument manifest is not optional
+      if (!manifest) {
+        Log.error("Sound.setup() failed: manifest argument is not optional", LOG_GROUP);
+        return;
+      }
+      // Instantiate a queue.
+      queue = new createjs.LoadQueue();
+      queue.installPlugin(createjs.Sound);
+      if (loadComplete) {
+        queue.addEventListener("complete", loadComplete);
+      }
+      if (handleFileError) {
+        queue.addEventListener("error", handleFileError);
+      }
+      //queue.addEventListener("fileload", fileComplete);
+      //queue.addEventListener("progress",handleProgress);
+      queue.loadManifest(manifest);
+    } catch (error) {
+      Log.error("Error in setup(): " + error.toString(), LOG_GROUP, error);
+    }
+  };
 
-    /**
-     * Play sound
-     * @param soundId
-     */
-    C.play = function (soundId, completeCallback) {
-        var soundInstance = createjs.Sound.play(soundId, createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 1, 0);
-        return soundInstance;
-    };
+  /**
+   * Play sound
+   * @param soundId
+   */
+  C.play = function (soundId, completeCallback) {
+    var soundInstance = createjs.Sound.play(soundId, createjs.Sound.INTERRUPT_NONE, 0, 0, 0, 1, 0);
+    return soundInstance;
+  };
 
-    /**
-     * Stop sound
-     * @param soundId (optional) if omitted all sounds stop
-     */
-    C.stop = function (soundId) {
-        createjs.Sound.stop(soundId);
-    };
+  /**
+   * Stop sound
+   * @param soundId (optional) if omitted all sounds stop
+   */
+  C.stop = function (soundId) {
+    createjs.Sound.stop(soundId);
+  };
 
-    //------------------------------------
-    // Init
-    //------------------------------------
-    EC.Sound = C;
-    //Log.debug("v" + C.VERSION, LOG_GROUP);
+  //------------------------------------
+  // Init
+  //------------------------------------
+  EC.Sound = C;
+  //Log.debug("v" + C.VERSION, LOG_GROUP);
 
 })(EdgeCommons);
 

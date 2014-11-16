@@ -37,63 +37,62 @@ Parallax Scrolling for Edge Animate
 @class Parallax
 **/
 (function (EC) {
-    //------------------------------------
-    // Constructor
-    //------------------------------------
-    var C = function () {
-    };
+  //------------------------------------
+  // Constructor
+  //------------------------------------
+  var C = function () {};
 
-    //------------------------------------
-    // Public
-    //------------------------------------
-    C.VERSION = "2.0.0";
-    C.compositions = {};
-    
-    //------------------------------------
-    // Private
-    //------------------------------------
-    // jQuery
-    var $ = EC.$;
-    // Logger
-    var Log = ModulogLog;
-    var LOG_GROUP = "EdgeCommons | Parallax";
+  //------------------------------------
+  // Public
+  //------------------------------------
+  C.VERSION = "2.0.0";
+  C.compositions = {};
 
-    //------------------------------------
-    // Methods
-    //------------------------------------
-    /**
-     * Add composition to parallax watcher
-     */
-    C.addComposition = function(compId) {
-      // Cancel if stage is not rendered yet and no height is available (creationComplete instead compositionReady)
-      
-      if (!AdobeEdge.getComposition(compId).getStage().getSymbolElement().height()) {
-        Log.error("Height of stage is not available yet. Make sure you are using compositionReady instead of creationComplete", LOG_GROUP);
-      }
-      
-      // calculate static composition values
-      this.compositions[compId] = {};
-      var stage = AdobeEdge.getComposition(compId).getStage();
-      this.compositions[compId].stage = stage;
-      // TODO: reuse stage
-      var stageElement = AdobeEdge.getComposition(compId).getStage().getSymbolElement();
-      this.compositions[compId].stageElement = stageElement;
-      var stageHeight = stageElement.height();
-      var stageWidth = stageElement.width();
-      this.compositions[compId].stageHeight = stageHeight;
-      this.compositions[compId].stageWidth = stageWidth;
-      //nojq
-      //var stageTop = stageElement.position().top;
-      var stageTop = stageElement.css("top");
-      this.compositions[compId].stageTop = stageTop;
-      this.compositions[compId].stageMiddle = Math.floor( (stageTop + stageHeight/2) );        
-      this.compositions[compId].duration = stage.getDuration();
+  //------------------------------------
+  // Private
+  //------------------------------------
+  // jQuery
+  var $ = EC.$;
+  // Logger
+  var Log = ModulogLog;
+  var LOG_GROUP = "EdgeCommons | Parallax";
 
-      // Stop timeline (override autoplay)
-      stage.stop(0);
+  //------------------------------------
+  // Methods
+  //------------------------------------
+  /**
+   * Add composition to parallax watcher
+   */
+  C.addComposition = function (compId) {
+    // Cancel if stage is not rendered yet and no height is available (creationComplete instead compositionReady)
+
+    if (!AdobeEdge.getComposition(compId).getStage().getSymbolElement().height()) {
+      Log.error("Height of stage is not available yet. Make sure you are using compositionReady instead of creationComplete", LOG_GROUP);
     }
-        
-    /**
+
+    // calculate static composition values
+    this.compositions[compId] = {};
+    var stage = AdobeEdge.getComposition(compId).getStage();
+    this.compositions[compId].stage = stage;
+    // TODO: reuse stage
+    var stageElement = AdobeEdge.getComposition(compId).getStage().getSymbolElement();
+    this.compositions[compId].stageElement = stageElement;
+    var stageHeight = stageElement.height();
+    var stageWidth = stageElement.width();
+    this.compositions[compId].stageHeight = stageHeight;
+    this.compositions[compId].stageWidth = stageWidth;
+    //nojq
+    //var stageTop = stageElement.position().top;
+    var stageTop = stageElement.css("top");
+    this.compositions[compId].stageTop = stageTop;
+    this.compositions[compId].stageMiddle = Math.floor((stageTop + stageHeight / 2));
+    this.compositions[compId].duration = stage.getDuration();
+
+    // Stop timeline (override autoplay)
+    stage.stop(0);
+  }
+
+  /**
     Setup Parallax Scrolling for a specific composition
 
         // MUST be in compositionReady (NOT IN creationComplete)
@@ -102,73 +101,73 @@ Parallax Scrolling for Edge Animate
     @method setup
     @param sym {Symbol} A Symbol within the affected composition  
     @param scrollType {String} A string to define the type of scroll : vertical (default) or horizontal
-    **/           
-    C.setup = function(sym, scrollType) {
-        // Check arguments 
-        if (!sym) {
-            Log.error( "Error in setup(). Argument 'sym' is not optional.", LOG_GROUP );
-            return;
-        }
-        if(scrollType===undefined){
-			scrollType = "vertical";
-		}
-      
-        // Add composition to list (currently only one composition is supported)
-        this.addComposition( sym.getComposition().getCompId() );
-        
-        // Add listener for scroll event on document
-        //var throttleIndex = throttleIndexInitial = 2;
-        $( document ).bind("scroll", function() {
-            // Throttle (disabled)
-            //if (throttleIndex != 0) {
-            //    throttleIndex--;
-            //    return;
-            //}
-            //throttleIndex = throttleIndexInitial;
-			if (scrollType == "vertical") {
-				//nojq
-				//var scrollPos = $(document).scrollTop();
-				var scrollPos = $("body")[0].scrollTop;
-				scrollVertical();
-			} else if (scrollType == "horizontal") {
-                //nojq
-				//var scrollPos = $(document).scrollLeft();
-                var scrollPos = $("body")[0].scrollLeft;
-				scrollHorizontal()
-			}
-            
-    
-            // Update all compositions
-            function scrollVertical() {
-                // nojq
-	        	//$.each( EC.Parallax.compositions, function(compId, c) {
-                for (var compId in EC.Parallax.compositions) {
-                    var c = EC.Parallax.compositions[compId];              
-	                // Calculate new playhead position
-	                var percentage = scrollPos / ( c.stageHeight - $(window).height() );
-	                var playheadPos = Math.floor( percentage * c.duration );
-	                c.stage.stop( playheadPos );
-				}  
-            }
-            
-            function scrollHorizontal() {
-                // nojq
-	        	//$.each( EC.Parallax.compositions, function(compId, c) {
-                for (var compId in EC.Parallax.compositions) {
-                    var c = EC.Parallax.compositions[compId];            
-	                // Calculate new playhead position
-	                var percentage = scrollPos / ( c.stageWidth - $(window).width() );
-	                var playheadPos = Math.floor( percentage * c.duration );
-	                c.stage.stop( playheadPos );
-				}  
-            }
-        });
+    **/
+  C.setup = function (sym, scrollType) {
+    // Check arguments 
+    if (!sym) {
+      Log.error("Error in setup(). Argument 'sym' is not optional.", LOG_GROUP);
+      return;
+    }
+    if (scrollType === undefined) {
+      scrollType = "vertical";
     }
 
-    //------------------------------------
-    // Init
-    //------------------------------------
-    EC.Parallax = C;
-    //Log.debug("v" + C.VERSION, LOG_GROUP);
+    // Add composition to list (currently only one composition is supported)
+    this.addComposition(sym.getComposition().getCompId());
+
+    // Add listener for scroll event on document
+    //var throttleIndex = throttleIndexInitial = 2;
+    $(document).bind("scroll", function () {
+      // Throttle (disabled)
+      //if (throttleIndex != 0) {
+      //    throttleIndex--;
+      //    return;
+      //}
+      //throttleIndex = throttleIndexInitial;
+      if (scrollType == "vertical") {
+        //nojq
+        //var scrollPos = $(document).scrollTop();
+        var scrollPos = $("body")[0].scrollTop;
+        scrollVertical();
+      } else if (scrollType == "horizontal") {
+        //nojq
+        //var scrollPos = $(document).scrollLeft();
+        var scrollPos = $("body")[0].scrollLeft;
+        scrollHorizontal()
+      }
+
+
+      // Update all compositions
+      function scrollVertical() {
+        // nojq
+        //$.each( EC.Parallax.compositions, function(compId, c) {
+        for (var compId in EC.Parallax.compositions) {
+          var c = EC.Parallax.compositions[compId];
+          // Calculate new playhead position
+          var percentage = scrollPos / (c.stageHeight - $(window).height());
+          var playheadPos = Math.floor(percentage * c.duration);
+          c.stage.stop(playheadPos);
+        }
+      }
+
+      function scrollHorizontal() {
+        // nojq
+        //$.each( EC.Parallax.compositions, function(compId, c) {
+        for (var compId in EC.Parallax.compositions) {
+          var c = EC.Parallax.compositions[compId];
+          // Calculate new playhead position
+          var percentage = scrollPos / (c.stageWidth - $(window).width());
+          var playheadPos = Math.floor(percentage * c.duration);
+          c.stage.stop(playheadPos);
+        }
+      }
+    });
+  }
+
+  //------------------------------------
+  // Init
+  //------------------------------------
+  EC.Parallax = C;
+  //Log.debug("v" + C.VERSION, LOG_GROUP);
 
 })(EdgeCommons);

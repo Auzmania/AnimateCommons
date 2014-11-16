@@ -49,12 +49,12 @@ TODO: DESCRIPTION FOR MASTER
 **/
 
 
+
 // Workaround to find the right $
 var ___ec$;
 try {
   ___ec$ = $;
-}
-catch (err) {
+} catch (err) {
   ___ec$ = AdobeEdge.$;
 }
 
@@ -63,34 +63,60 @@ catch (err) {
 
 
 (function (window, $) {
-    //------------------------------------
-    // Constructor
-    //------------------------------------
-    var EdgeCommons = function () {
-    };
+  //------------------------------------
+  // Constructor
+  //------------------------------------
+  var EdgeCommons = function () {};
 
-    //------------------------------------
-    // Public
-    //------------------------------------
-    EdgeCommons.VERSION = "0.0.0";
-    EdgeCommons.$ = $;
+  //------------------------------------
+  // Public
+  //------------------------------------
+  EdgeCommons.VERSION = "0.0.0";
+  EdgeCommons.$ = $;
 
-    //------------------------------------
-    // Private
-    //------------------------------------
-    var LOG_GROUP = "EdgeCommons";
+  //------------------------------------
+  // Private
+  //------------------------------------
+  var LOG_GROUP = "EdgeCommons";
 
-    //------------------------------------
-    // Methods
-    //------------------------------------
+  //------------------------------------
+  // Methods
+  //------------------------------------
 
-    //------------------------------------
-    // Init
-    //------------------------------------
-    window.EC = window.EdgeCommons = EdgeCommons;
-    //Log.debug("v" + VERSION, LOG_GROUP);
+  //------------------------------------
+  // Init
+  //------------------------------------
+  window.EC = window.EdgeCommons = EdgeCommons;
+  //Log.debug("v" + VERSION, LOG_GROUP);
 
-//})(window, AdobeEdge.$);
-//})(window, $);
+  //})(window, AdobeEdge.$);
+  //})(window, $);
 })(window, ___ec$);
 
+
+
+
+
+
+//==================================================
+//==================================================
+// Shortcuts
+//==================================================
+//==================================================
+
+
+//==================================================
+// Extending Symbol
+//==================================================
+___ec$.extend(AdobeEdge.Symbol.prototype, {
+  // NOT WORKING WITH SYMBOLS CURRENTLY (transform)
+  ubr_center: function () {
+    EC.centerElement(this.getSymbolElement());
+  },
+  ubr_makeStaticButton: function (label, icon, clickHandler, data) {
+    EC.makeStaticButton(this, label, icon, clickHandler, data);
+  },
+  ubr_makeAnimatedButton: function (label, icon, clickHandler, data) {
+    EC.makeAnimatedButton(this, label, icon, clickHandler, data);
+  }
+});

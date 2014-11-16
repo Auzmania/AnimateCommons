@@ -66,8 +66,8 @@ TODO: DESCRIPTION FOR EXPERIMENTAL
     //-------------------------------------------    
     C.SpeedControl = {};
     /**
-     * TODO: recursive
-     */
+     * DEPRICATED
+
     C.SpeedControl.setSpeed = function(factor, sym, recursive) {
         //EC.debug("setSpeed: factor:", LOG_GROUP, factor);    
         
@@ -92,6 +92,7 @@ TODO: DESCRIPTION FOR EXPERIMENTAL
         });
         sym._flushCache();
     };    
+     */    
         
         
     //------------------------------------

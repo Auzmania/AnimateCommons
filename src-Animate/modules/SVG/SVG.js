@@ -36,30 +36,29 @@ SVG: Interactive SVG within you Edge Animate compositions
 @class SVG
 **/
 (function (EC) {
-    //------------------------------------
-    // Constructor
-    //------------------------------------
-    var C = function () {
-    };
+  //------------------------------------
+  // Constructor
+  //------------------------------------
+  var C = function () {};
 
-    //------------------------------------
-    // Public
-    //------------------------------------
-    C.VERSION = "1.0.0";
-    
-    //------------------------------------
-    // Private
-    //------------------------------------
-    // jQuery
-    var $ = EC.$;
-    // Logger
-    var Log = ModulogLog;
-    var LOG_GROUP = "EdgeCommons | SVG";
+  //------------------------------------
+  // Public
+  //------------------------------------
+  C.VERSION = "1.0.0";
 
-    //------------------------------------
-    // Methods
-    //------------------------------------  
-    /**
+  //------------------------------------
+  // Private
+  //------------------------------------
+  // jQuery
+  var $ = EC.$;
+  // Logger
+  var Log = ModulogLog;
+  var LOG_GROUP = "EdgeCommons | SVG";
+
+  //------------------------------------
+  // Methods
+  //------------------------------------  
+  /**
     Convert SVG to be accessible
         <pre>
 		EC.SVG.accessSVG( sym.$("pie") )
@@ -73,50 +72,49 @@ SVG: Interactive SVG within you Edge Animate compositions
 			});  
         </pre>
     **/
-    C.accessSVG = function(element) {
-        if (element.is("div")) {
-			var imgSrc = element.css("background-image").replace("url(","").replace(")","");
-			// Remove "" in IE
-			imgSrc = imgSrc.replace("\"", "");
-		}
-        else if (element.is("img")) {
-			var imgSrc = element.attr("src");
-		}
-		//TODO: Check if is SVG
-
-		// Replace with real SVG
-		// TODO: improve flicker (maybe set invisible during loading and wait for complete)
-		element.css("background-image", "");
-        var uniqueId = "ec_"+Math.random().toString(36).substring(7);
-		element.append('<embed id="'+uniqueId+'" src="'+imgSrc+'" type="image/svg+xml" width="100%" height="100%" />');
-        
-		// Create promise
-		var promise = new jQuery.Deferred();
-
-		// Wait for Embed to be loaded
-		//var embed = jQuery("#svgEmbed");
-        
-        var svgElement = document.getElementById(uniqueId);
-
-		svgElement.onload = function() {
-            var svgDocument = svgElement.getSVGDocument();
-            // Update (Inject notify function. Makes svg.js obsolete)
-            svgDocument.notify = function (ref, type) {
-                 var event = document.createEvent("CustomEvent");
-                 event.initEvent(type,true,true);
-                 ref.dispatchEvent(event);
-            }
-			// TODO return id
-			promise.resolve( svgDocument, svgElement, uniqueId );
-		};
-        
-        return promise;
+  C.accessSVG = function (element) {
+    if (element.is("div")) {
+      var imgSrc = element.css("background-image").replace("url(", "").replace(")", "");
+      // Remove "" in IE
+      imgSrc = imgSrc.replace("\"", "");
+    } else if (element.is("img")) {
+      var imgSrc = element.attr("src");
     }
-        
-    //------------------------------------
-    // Init
-    //------------------------------------
-    EC.SVG = C;
-    //Log.debug("v" + C.VERSION, LOG_GROUP);
+    //TODO: Check if is SVG
+
+    // Replace with real SVG
+    // TODO: improve flicker (maybe set invisible during loading and wait for complete)
+    element.css("background-image", "");
+    var uniqueId = "ec_" + Math.random().toString(36).substring(7);
+    element.append('<embed id="' + uniqueId + '" src="' + imgSrc + '" type="image/svg+xml" width="100%" height="100%" />');
+
+    // Create promise
+    var promise = new jQuery.Deferred();
+
+    // Wait for Embed to be loaded
+    //var embed = jQuery("#svgEmbed");
+
+    var svgElement = document.getElementById(uniqueId);
+
+    svgElement.onload = function () {
+      var svgDocument = svgElement.getSVGDocument();
+      // Update (Inject notify function. Makes svg.js obsolete)
+      svgDocument.notify = function (ref, type) {
+        var event = document.createEvent("CustomEvent");
+        event.initEvent(type, true, true);
+        ref.dispatchEvent(event);
+      }
+      // TODO return id
+      promise.resolve(svgDocument, svgElement, uniqueId);
+    };
+
+    return promise;
+  }
+
+  //------------------------------------
+  // Init
+  //------------------------------------
+  EC.SVG = C;
+  //Log.debug("v" + C.VERSION, LOG_GROUP);
 
 })(EdgeCommons);

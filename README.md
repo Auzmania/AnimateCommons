@@ -12,6 +12,7 @@ Current realease: 2.0.2
 History:
 
 [ 2.0.x ]
++ checkVisibility and autoplayOnVisibility
 + Demo folder added
 + EC.pause() and EC.unpause() added (both support recursive flag)
 + EC.getChildSymbols() /w as recursive function added (needed for pause/unpause)
