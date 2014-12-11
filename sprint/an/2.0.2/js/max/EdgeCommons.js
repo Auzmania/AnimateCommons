@@ -800,7 +800,10 @@ Version 1.1.0
     _addCSSRule(EC.stylesheet, selector, propertiesString, index);
   }
 
-
+  //==================================================
+  // Misc
+  //==================================================
+  
   /**
    * Read hash parameter (e.g. for Deep Linking)
    * Consider implementing "jQuery address" for more advanced power (http://www.asual.com/jquery/address/)
@@ -839,6 +842,10 @@ Version 1.1.0
     $("head").append('<meta name="viewport" content="' + content + '">');
   }
 
+  //==================================================
+  // Symbols and Triggers
+  //==================================================  
+  
   /**
    * Get all children of a symbols (recursive or immediate children only)
    *  e.g.
@@ -861,6 +868,77 @@ Version 1.1.0
       }
     }
     return result;
+  }
+  
+  
+  /**
+   * Get triggers of a symbol
+   * @param {Animate Symbol} sym The symbol to inspect
+   */
+  EC.getTriggers = function(sym) {
+    // Find symbol definition to given symbol instance
+    var symDefn = sym.data[sym.name];
+    
+    // Return
+    var triggerMap = [];
+    
+    //--------------------------------------------------
+    // Find all trigger definitions
+    //--------------------------------------------------
+    for (var i = 0; i<symDefn.timeline.data.length; i++) {
+      
+      
+      var data = symDefn.timeline.data[i];
+      
+      // Identify real trigger (playback actions look alike)
+      // trigger must match: [1] == "trigger" & [0] === [3] === "trig_1|2|..." & [2] == time
+      if ( (data[1] === "trigger") && (data[0] === data[3])) {
+        
+        
+        // Collect trigger data
+        var trigger = {
+              trig_id: data[0],
+              time: data[2],
+              binding_id: null, // will be mapped later
+              fired: false // TODO: check if trigger was already fired when calling
+            };
+
+        //--------------------------------------------------
+        // Find related trigger function
+        //--------------------------------------------------      
+        for (var j = 0; j<symDefn.bindings.length; j++) {
+          var b = symDefn.bindings[j];
+          
+          // Was trigger already fired?
+          // sym.tlCached.triggers[i].animation.fired      find by:  .eventType === "trig_3"
+          
+          if (b[0][2].indexOf("trig_") === 0 ) { 
+            var trig_id = b[0][2];
+            if (trigger.trig_id === trig_id) {
+              trigger.binding_id = b[1];
+              //console.log("CONTINUE");
+              continue;
+            }
+          }
+        }
+        
+        triggerMap.push(trigger); 
+      }
+    }
+    
+    
+    console.log("----------");
+    console.log(triggerMap);
+    console.log("----------");
+    
+    //sym[trigger.binding_id]();
+    
+    console.log("----------");
+    
+    
+    
+    return triggerMap;
+  
   }
 
 

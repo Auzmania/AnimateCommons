@@ -10,7 +10,7 @@
 //================================================
 var customConfig = {
   an: {
-    version: "2.0.2" 
+    version: "2.0.4" 
   },
   rf: {
     version: "0.0.4"
@@ -93,7 +93,7 @@ module.exports = function(grunt) {
         ]
       }
     });
-    
+      
     // Uglify
     grunt.config.set("uglify", {
       options: {

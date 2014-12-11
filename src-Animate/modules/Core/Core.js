@@ -32,7 +32,6 @@
 
 /**
 The core module of EdgeCommons 
-Version 1.1.0
 @module Core
 **/
 (function (EC) {
@@ -50,7 +49,7 @@ Version 1.1.0
   //------------------------------------
   // Private
   //------------------------------------
-  // jQuery
+  // $/jQuery
   var $ = EC.$;
   // Logger
   var Log = ModulogLog;
@@ -234,6 +233,9 @@ Version 1.1.0
       console.error(error);
     }
   };
+  
+  
+   
 
   /**
    * Find out if full jQuery is used
@@ -244,6 +246,9 @@ Version 1.1.0
 
   /**
    * Composition Loader
+   *  
+   * TODO: UPDATE DOC: promise substituted with callback (no more jquery dep)
+   *
    * EXAMPLE:
    * var targetContainer = sym.getSymbol("targetContainer");
    * EC.loadComposition("sub2.html", targetContainer)
@@ -252,7 +257,7 @@ Version 1.1.0
    *      comp.getStage().$('targetContainer').append("<hr/>HUHU  222<hr/>");
    *   });
    */
-  EC.loadComposition = function (src, symbolOrElement) {
+  EC.loadComposition = function (src, symbolOrElement, callback) {
     // Check arguments 
     if (!src || !symbolOrElement) {
       Log.error("Error in loadComposition(). Arguments 'src' and 'sym' are not optional.", LOG_GROUP);
@@ -260,7 +265,7 @@ Version 1.1.0
     }
     try {
       // Symbol or Element
-      var el;
+      var el; 
       if (symbolOrElement instanceof AdobeEdge.Symbol) {
         el = symbolOrElement.getSymbolElement();
       } else {
@@ -270,17 +275,26 @@ Version 1.1.0
       var uniqueId = "ec_" + Math.random().toString(36).substring(7);
       //el.html('<iframe id="'+uniqueId+'" src="'+src+'" style="overflow: hidden; width: 100%; height: 100%; margin: auto; border: 0 none; background-color: rgba(255,255,255,0)"></iframe>');
       // Prevent flickering (http://css-tricks.com/prevent-white-flash-iframe/)
-      el.html('<iframe id="' + uniqueId + '" src="' + src + '" style="visibility:hidden; overflow: hidden; width: 100%; height: 100%; margin: auto; border: 0 none; background-color: rgba(255,255,255,0)" onload="this.style.visibility=\'visible\';"></iframe>');
+      //el.html('<iframe id="' + uniqueId + '" src="' + src + '" style="visibility:hidden; overflow: hidden; width: 100%; height: 100%; margin: auto; border: 0 none; background-color: rgba(255,255,255,0)" onload="this.style.visibility=\'visible\';"></iframe>');
+      el.html('<iframe id="' + uniqueId + '" style="visibility:hidden; overflow: hidden; width: 100%; height: 100%; margin: auto; border: 0 none; background-color: rgba(255,255,255,0)"></iframe>');
+      
+      
+      
       // Create promise
-      var promise = new jQuery.Deferred();
-
-      // Wait for IFrame to be loaded
-      var iframe = jQuery("#" + uniqueId);
-      //EC.debug("iframe", LOG_GROUP, iframe);
+      //var promise = new jQuery.Deferred();
+ 
+      //--------------------------------------------------
+      // Wait for IFrame and inner composition to be loaded
+      //--------------------------------------------------
+      var iframe = $("#" + uniqueId);
       var innerWindow = iframe[0].contentWindow;
-      //EC.debug("innerWindow", LOG_GROUP, innerWindow);
-      iframe.load(function () {
-        //EC.debug("iframe load done");
+      
+      // Handle IFrame load
+      iframe[0].onload = function(evt) { 
+        
+        // Make visible (anti flickering on init)
+        this.style.visibility='visible';
+        
         // Wait for inner composition to be bootstrapped
         innerWindow.AdobeEdge.bootstrapCallback(function (compId) {
           //EC.debug("Inner composition was bootstrapped: ", LOG_GROUP, compId);
@@ -288,14 +302,28 @@ Version 1.1.0
           var innerComp = innerWindow.AdobeEdge.getComposition(compId);
           //EC.debug("innerComp", LOG_GROUP, innerComp);
           //innerComp.getStage().$('targetContainer').html("<hr/>TEST<hr/>");
-          promise.resolve(innerComp, uniqueId, innerWindow.AdobeEdge);
+          
+          // Resolve promise
+          //promise.resolve(innerComp, uniqueId, innerWindow.AdobeEdge);
+          
+          // Optionally call callback
+          if (typeof callback === "function") {
+            callback(innerComp, uniqueId, innerWindow.AdobeEdge);
+          }
         });
-      });
+      };
+      
+      // Set src to load inner composition
+      src = src+"?nocachingid="+uniqueId; // NoCache hack
+      iframe.attr("src", src);
+      
     } catch (err) {
       EC.error("Error in loadComposition: ", LOG_GROUP, err.toString());
     }
-    return promise;
-  }
+     
+    // Return promise
+    //return promise;
+  };
 
   //==================================================
   // Buttons
@@ -413,16 +441,6 @@ Version 1.1.0
   EC.CLICK_OR_TOUCH = (EC.isMobile()) ? "touchstart" : "click";
 
 
-  /**
-   * Read get parameter
-   * @param key Name of GET key
-   * @return value of GET key
-   */
-  EC.readGetParam = function (key) {
-    var results = new RegExp('[\\?&]' + key + '=([^&#]*)').exec(window.location.href);
-    return (results) ? (decodeURIComponent(results[1] || 0)) : null;
-  }
-
   //==================================================
   // CSS
   // (Inspired by http://davidwalsh.name/add-rules-stylesheets)
@@ -485,45 +503,14 @@ Version 1.1.0
     _addCSSRule(EC.stylesheet, selector, propertiesString, index);
   }
 
+  //==================================================
+  // Misc
+  //==================================================
 
-  /**
-   * Read hash parameter (e.g. for Deep Linking)
-   * Consider implementing "jQuery address" for more advanced power (http://www.asual.com/jquery/address/)
-   * Consider concept like http://www.asual.com/jquery/address/samples/crawling/#!/?page=/getting-started
-   * // Change hash proprammatically
-   * window.location.hash = "simonsays";
-   * // Listen for hash change event
-   * $(window).bind("hashchange", function() {
-   *   console.debug("HASH", window.location.hash);
-   * });
-   * @return hash or null
-   */
-  EC.readHashFromURL = function () {
-    var results = new RegExp('#([^ |^?|^&|^=]*)').exec(window.location.href);
-    return (results) ? (decodeURIComponent(results[0])) : null;
-  }
-
-  /**
-   * Add metatag for viewport to page header
-   * @param type init(default)|nozoom|custom
-   * @param content custom content attribute for viewport (only avail. if type==custom)
-   */
-  EC.setMetaViewport = function (type, content) {
-    var content;
-    switch (type) {
-    case "custom":
-      content = content;
-      break;
-    case "nozoom":
-      content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-      break;
-    case "init":
-    default:
-      content = 'width=device-width, initial-scale=1.0';
-    }
-    $("head").append('<meta name="viewport" content="' + content + '">');
-  }
-
+  //==================================================
+  // Symbols and Triggers
+  //==================================================  
+  
   /**
    * Get all children of a symbols (recursive or immediate children only)
    *  e.g.
@@ -546,8 +533,7 @@ Version 1.1.0
       }
     }
     return result;
-  }
-
+  };
 
   //==================================================
   // Pause/Unpause
@@ -609,50 +595,6 @@ Version 1.1.0
    */
   EC.unpause = function (sym, recursive) {
     _handlePause(sym, true, recursive);
-  }
-
-  //==================================================
-  // Visibility
-  //==================================================
-  
-  /**
-   * Is Symbol in viewport
-   * @param   {Object}  el Element to check
-   * @returns {Boolean} Visible or not visible
-   */
-  function _isElementInViewport(el) {
-    //special bonus for those using jQuery
-    if (typeof jQuery === "function" && el instanceof jQuery) {
-      el = el[0];
-    }
-    var r = el.getBoundingClientRect();
-    return (
-      r.top >= 0 &&
-      r.left >= 0 &&
-      r.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      r.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-  }
-  EC.checkVisibility = function(sym) {
-    return _isElementInViewport(sym.getSymbolElement()[0]);
-  }
-  EC.autoplayOnVisibility = function(sym) {
-    sym.setVariable("autoplayOnVisibility", true);
-    // Internal function
-    function onScroll(evt) {
-      var checkVisibility = EC.checkVisibility(sym);
-      //console.log("checkVisibility", checkVisibility);
-      if (checkVisibility) {
-        if (sym.getVariable("autoplayOnVisibility") &&  !sym.isPlaying()) {
-          sym.play();
-          sym.setVariable("autoplayOnVisibility", false);
-          // Remove global scroll event
-          $(window).unbind("scroll", onScroll);
-        }
-      }
-    }
-    // Listen for scroll global event
-    $(window).bind("scroll", onScroll);
   }
 
 

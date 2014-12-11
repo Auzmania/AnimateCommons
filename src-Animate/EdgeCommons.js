@@ -108,6 +108,8 @@ try {
 //==================================================
 // Extending Symbol
 //==================================================
+/*
+// IDEA IS DEPRICATED
 ___ec$.extend(AdobeEdge.Symbol.prototype, {
   // NOT WORKING WITH SYMBOLS CURRENTLY (transform)
   ubr_center: function () {
@@ -120,3 +122,4 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
     EC.makeAnimatedButton(this, label, icon, clickHandler, data);
   }
 });
+*/

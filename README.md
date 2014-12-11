@@ -12,8 +12,7 @@ Current realease: 2.0.2
 History:
 
 [ 2.0.x ]
-+ checkVisibility and autoplayOnVisibility
-+ Demo folder added
++ (MOVED TO UBR) checkVisibility and autoplayOnVisibility
 + EC.pause() and EC.unpause() added (both support recursive flag)
 + EC.getChildSymbols() /w as recursive function added (needed for pause/unpause)
 + EC.addCSS(...) added
@@ -25,7 +24,8 @@ History:
 + EC.centerStage() is now REAL centering stage (even with negative left position) 
 + EC.centerElement() added to center Elements
 + EC.Sound package is no longer included in "All in one" package
-+ setMetaViewport: Set the viewport metatag
++ (MOVED TO UBR) setMetaViewport: Set the viewport metatag
++ loadComposition: promise substituted with callback (no more jquery dep)
 
 [ 1.4.0 ]
 + Parallax Update: Fix for Animate 5.x (thanks to psaunders)
@@ -33,7 +33,7 @@ History:
 + Spotlight Update: Now supports https://
 
 [ 1.3.1 ]
-+ Added readHashFromURL to Core (e.g. for Deep Linking)
++ (MOVED TO UBR) Added readHashFromURL to Core (e.g. for Deep Linking)
 
 [ 1.3.0 ]
 + loadComposition: prevent flickerin
@@ -52,7 +52,7 @@ History:
 [ 1.1.0 ]
 + Several bugfixes in Adaptive Layouts (buffer removed, animated symbols fix)
 + 2 Button Helper (EC.makeStaticButton() and EC.makeAnimatedButton)
-+ readGetParam to get fragment of GET parameter from URL
++ (MOVED TO UBR) readGetParam to get fragment of GET parameter from URL
 + Helper function to detect mobile devices
 
 [ 1.0.4 ]
