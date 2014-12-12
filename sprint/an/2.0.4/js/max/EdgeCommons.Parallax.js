@@ -1,3 +1,5 @@
+// EdgeCommons for Edge Animate v2.0.4 +++ Visit edgecommons.org for documentation, updates and examples +++ Copyright (c) 2015 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.
+
 /**
  * EdgeCommons
  * Dirty little Helpers for Adobe Edge
@@ -60,7 +62,6 @@
   
   /**
    * (Internal) Add composition to parallax watcher
-   * @ignore
    */
   C.addComposition = function (compId) {
     // Cancel if stage is not rendered yet and no height is available (creationComplete instead compositionReady)
@@ -93,7 +94,6 @@
 
   /**
    * Setup Parallax Scrolling for a specific composition
-   * @alias EC.setup
    * @memberof Parallax
    * @example
    * // Setup Parallax Scrolling

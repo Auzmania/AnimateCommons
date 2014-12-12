@@ -1,3 +1,5 @@
+// EdgeCommons for Edge Animate v2.0.4 +++ Visit edgecommons.org for documentation, updates and examples +++ Copyright (c) 2015 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.
+
 /*
  * EdgeCommons
  * Dirty little Helpers for Adobe Edge
@@ -61,22 +63,21 @@
 
   /**
    * Open a spotlight overlay by passing in a configuration object
-   * @alias EC.open
    * @memberof Spotlight
    * @param config {Object} The configuration object  
-   * <pre>
-   *   var config = {
-   *     width: 700,                                   // Width of the overlay
-   *     height: 400,                                  // Height of the overlay
-   *     borderWidth: 5,                               // Border width (px)
-   *     borderColor: "#FFF",                          // Border color
-   *     type: "image",                                // Media type (image|animate|youtube)
-   *     source: "images/MyImage.png",                 // Source to media
-   *     onClose: function(config, documentContext) {} // Callback for close button
-   *     param: {}                                     // Additional parameter dependent on type (e.g. autoPlay: true for youtube)
-   *   }
-   * </pre>
-   * @param [documentContext=window.top.document] {Object} The parent context for the spotlight overlay (e.g. window.document or window.parent.document)
+   *   <pre>
+   *     var config = {
+   *       width: 700,                                   // Width of the overlay
+   *       height: 400,                                  // Height of the overlay
+   *       borderWidth: 5,                               // Border width (px)
+   *       borderColor: "#FFF",                          // Border color
+   *       type: "image",                                // Media type (image|animate|youtube)
+   *       source: "images/MyImage.png",                 // Source to media
+   *       onClose: function(config, documentContext) {} // Callback for close button
+   *       param: {}                                     // Additional parameter dependent on type (e.g. autoPlay: true for youtube)
+   *     }
+   *   </pre>
+   * @param {Object} [window.top.document] The parent context for the spotlight overlay (e.g. window.document or window.parent.document)
    * @return {Boolean} returns <code>true</code> whenever the opening of the spotlight overlay was successfull otherwise <code>false</code>
    */
   C.open = function (config, documentContext) {
@@ -220,10 +221,9 @@
   /**
    * Close an existing spotlight overlay<br/>
    * (This function usually gets called by the internal close button automatically)
-   * @alias EC.close
    * @memberof Spotlight
    * @param config {Object} The configuration object  
-   * @param [documentContext=window.top.document] {Object} The parent context for the spotlight overlay (e.g. window.document or window.parent.document)
+   * @param {Object} [documentContext=window.top.document] The parent context for the spotlight overlay (e.g. window.document or window.parent.document)
    * @return {Boolean} returns <code>true</code> whenever the opening of the spotlight overlay was successfull otherwise <code>false</code>
    */  
   C.close = function (config, documentContext) {

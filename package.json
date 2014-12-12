@@ -1,6 +1,6 @@
 {
   "name": "EdgeCommons",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "homepage": "http://www.edgecommons.org",
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -8,6 +8,7 @@
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-text-replace": "~0.3.10",
-    "grunt-contrib-copy": "~0.4.1"
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-jsdoc": "~0.6.1"
   }
 }

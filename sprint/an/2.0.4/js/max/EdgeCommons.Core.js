@@ -1,4 +1,307 @@
+// EdgeCommons for Edge Animate v2.0.4 +++ Visit edgecommons.org for documentation, updates and examples +++ Copyright (c) 2015 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.
+
 /**
+ * Modulog
+ * by Simon Widjaja
+ **/
+(function (window, $) {
+    //------------------------------------
+    // Constructor
+    //------------------------------------
+    var C = function () {
+    };
+    //------------------------------------
+    // Public
+    //------------------------------------
+    C.VERSION = "0.0.2";
+    C.$ = $;
+    //------------------------------------
+    // Private
+    //------------------------------------
+
+    //------------------------------------
+    // Init
+    //------------------------------------
+    window.Modulog = C;
+})(window, AdobeEdge.$);
+
+
+/**
+ * ModulogLog
+ * by Simon Widjaja
+ */
+(function (Modulog) {
+    //------------------------------------
+    // Constructor
+    //------------------------------------
+    var C = function () {
+    };
+    //------------------------------------
+    // Public
+    //------------------------------------
+    C.VERSION = "0.0.2";
+    C.LEVEL_NONE = 0;
+    C.LEVEL_ERROR = 1;
+    C.LEVEL_WARN = 2;
+    C.LEVEL_INFO = 3;
+    C.LEVEL_DEBUG = 4;
+    C.level = C.LEVEL_DEBUG; // Default Log level
+    //------------------------------------
+    // Private
+    //------------------------------------
+    // jQuery
+    var $ = Modulog.$;
+
+    var additionalLogTarget = null;
+    //------------------------------------
+    // Methods
+    //------------------------------------
+    C.addLogTarget = function (loggerCallback) {
+        if (typeof loggerCallback === "function") {
+            additionalLogTarget = loggerCallback;
+        }
+    };
+    C.debug = function (msg, group, object) {
+        if (ModulogLog.level >= ModulogLog.LEVEL_DEBUG) {
+            var out = "[ DEBUG " + ((group) ? "| " + group + " " : "") + "] " + msg;
+            if ((typeof console != "undefined") && (typeof console.debug != "undefined")) {
+                (object) ? console.debug(out, object) : console.debug(out);
+            } 
+            else if ((typeof console != "undefined") && (typeof console.info != "undefined")) {
+                (object) ? console.info(out, object) : console.info(out);                
+            }
+            ModulogLog.__delegate(out, object);
+        }
+    };
+    C.info = function (msg, group, object) {
+        if (ModulogLog.level >= ModulogLog.LEVEL_INFO) {
+            var out = "[ INFO " + ((group) ? "| " + group + " " : "") + "] " + msg;
+            if ((typeof console != "undefined") && (typeof console.info != "undefined")) {
+                (object) ? console.info(out, object) : console.info(out);
+            }
+            ModulogLog.__delegate(out, object);
+        }
+    };
+    C.warn = function (msg, group, object) {
+        if (ModulogLog.level >= ModulogLog.LEVEL_WARN) {
+            var out = "[ WARN " + ((group) ? "| " + group + " " : "") + "] " + msg;
+            if ((typeof console != "undefined") && (typeof console.warn != "undefined")) {
+                (object) ? console.warn(out, object) : console.warn(out);
+            }
+            ModulogLog.__delegate(out, object);
+        }
+    };
+    C.error = function (msg, group, object) {
+        if (ModulogLog.level >= ModulogLog.LEVEL_ERROR) {
+            var out = "[ ERROR " + ((group) ? "| " + group + " " : "") + "] " + msg;
+            if ((typeof console != "undefined") && (typeof console.error != "undefined")) {
+                (object) ? console.error(out, object) : console.error(out);
+            }
+            ModulogLog.__delegate(out, object);
+        }
+    };
+    C.__delegate = function (msg, object) {
+        if (additionalLogTarget) {
+            (object) ? additionalLogTarget(msg + " : " + object.toString()) : additionalLogTarget(msg);
+        }
+    };
+    //------------------------------------
+    // Init
+    //------------------------------------
+    window.Log = window.MLog = window.ModulogLog = C;
+})(window.Modulog);
+
+
+/**
+ * ModulogConfig
+ * by Simon Widjaja
+ * Usage:
+ * - Config.init(configObject);
+ * - Config.init(url, callback);
+ * - Config.set("topic.subtopic.value", value);
+ * - Config.get("topic.subtopic.value");
+ */
+(function (Modulog) {
+    //------------------------------------
+    // Constructor
+    //------------------------------------
+    var C = function () {
+    };
+    //------------------------------------
+    // Public
+    //------------------------------------
+    C.VERSION = "0.0.1";
+    //------------------------------------
+    // Private
+    //------------------------------------
+    // jQuery
+    var $ = Modulog.$;
+    // Config
+    var config = null;
+    // Logger
+    var Log = ModulogLog;
+    var LOG_GROUP = "Modulog | ModulogConfig";
+
+    //------------------------------------
+    // Methods
+    //------------------------------------
+    C.get = function (path) {
+        var el = path.split(".");
+        var value = config;
+        for (var i = 0; i < el.length; i++) {
+            var p = el[i];
+            if (!value.hasOwnProperty(p)) {
+                ModulogLog.warn("Config value not found: " + path, "CONFIG");
+            }
+            value = value[p];
+        }
+        return value;
+    };
+    C.set = function (path, value) {
+        var el = path.split(".");
+        var target = config;
+        for (var i = 0; i < el.length - 1; i++) {
+            target = target[el[i]];
+        }
+        target[el.pop()] = value;
+    };
+    C.init = function (param, readyCallback) {
+        // URL
+        if ((typeof(param) === "string") && (jQuery)) {          
+            $.getJSON(param, function (data) {
+                config = data;
+                if (typeof(readyCallback) === "function") {
+                    readyCallback();
+                }
+            });
+        }
+        // Config Object
+        else if (typeof(param) === "object") {
+            config = param;
+        }
+        // Error
+        else {
+            Log.error("Could not init config. init() function expects config object or url to config.js. " +
+                "Latter needs jQuery to be initialized before.", LOG_GROUP);
+        }
+    };
+    //------------------------------------
+    // Init
+    //------------------------------------
+    window.Config = window.MConfig = window.ModulogConfig = C;
+})(window.Modulog);
+
+
+;/*
+ * EdgeCommons
+ * Dirty little Helpers for Adobe Edge Animate
+ * by Simon Widjaja
+ *
+ * Additional Contributors:
+ * Timm Jansen, Johannes Boyne
+ *
+ * Copyright (c) 2014 Simon Widjaja
+ *
+ * --------------------------------------------------------------------------------------------------------------------------------------------------
+ * Released under MIT license
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ * --------------------------------------------------------------------------------------------------------------------------------------------------
+ * Additional 3rd party libraries are used. For related credits and license models take a closer look at the affected library.
+ * --------------------------------------------------------------------------------------------------------------------------------------------------
+ * EdgeCommons uses:
+ * - Adobe Edge API
+ * - Modulog
+ * - YepNope
+ * --------------------------------------------------------------------------------------------------------------------------------------------------
+ */
+
+ 
+/**
+ * Workaround to find the right $
+ * @ignore
+ */
+var ___ec$;
+try {
+  ___ec$ = $;
+} catch (err) {
+  ___ec$ = AdobeEdge.$;
+}
+
+
+
+
+
+(function (window, $) {
+  //------------------------------------
+  // Constructor
+  //------------------------------------
+  var EdgeCommons = function () {};
+
+  //------------------------------------
+  // Public
+  //------------------------------------
+  EdgeCommons.VERSION = "2.0.4";
+  EdgeCommons.$ = $;
+
+  //------------------------------------
+  // Private
+  //------------------------------------
+  var LOG_GROUP = "EdgeCommons";
+
+  //------------------------------------
+  // Methods
+  //------------------------------------
+
+  //------------------------------------
+  // Init
+  //------------------------------------
+  window.EC = window.EdgeCommons = EdgeCommons;
+  //Log.debug("v" + VERSION, LOG_GROUP);
+
+  //})(window, AdobeEdge.$);
+  //})(window, $);
+})(window, ___ec$);
+
+
+
+
+
+
+//==================================================
+//==================================================
+// Shortcuts
+//==================================================
+//==================================================
+
+
+//==================================================
+// Extending Symbol
+//==================================================
+/*
+// IDEA IS DEPRICATED
+___ec$.extend(AdobeEdge.Symbol.prototype, {
+  // NOT WORKING WITH SYMBOLS CURRENTLY (transform)
+  ubr_center: function () {
+    EC.centerElement(this.getSymbolElement());
+  },
+  ubr_makeStaticButton: function (label, icon, clickHandler, data) {
+    EC.makeStaticButton(this, label, icon, clickHandler, data);
+  },
+  ubr_makeAnimatedButton: function (label, icon, clickHandler, data) {
+    EC.makeAnimatedButton(this, label, icon, clickHandler, data);
+  }
+});
+*/;/**
  * EdgeCommons
  * Dirty little Helpers for Adobe Edge Animate
  * by Simon Widjaja and friends
@@ -60,7 +363,7 @@
   var _currentAdaptiveSymbol = null;
   var _adaptiveLayoutCallback = null;
 
-
+  
   //------------------------------------
   // Methods
   //------------------------------------
@@ -71,8 +374,8 @@
    * @memberof Core
    * @example
    * // TODO
-   * @param sym {AnimateSymbol} Reference to any symbol of the affected composition
-   * @param [showHorizontalScrollbar] {Boolean} (Optional) Flag to hide scrollbar on body (true|false, default: false)
+   * @param {AnimateSymbol} sym Reference to any symbol of the affected composition
+   * @param {Boolean} showHorizontalScrollbar Flag to hide scrollbar on body (true|false, default: false)
    * @return {Boolean} Always true
    */
   EC.centerStage = function (sym, showHorizontalScrollbar) {
@@ -97,7 +400,7 @@
    * @memberof Core
    * @example
    * // TODO
-   * @param el {Element} Element reference (type: AdobeEdge.$ or jQuery element)
+   * @param {Element} el Element reference (type: AdobeEdge.$ or jQuery element)
    * @return {Boolean} Always true
    */
   EC.centerElement = function (el) {
@@ -119,8 +422,8 @@
    * @memberof Core
    * @example
    * // TODO
-   * @param sym {AnimateSymbol} Reference to a Animate symbol
-   * @param [unique] {Boolean} (Optional) Return full/unique name (e.g. Stage_ResponsiveElement)
+   * @param {AnimateSymbol} sym Reference to a Animate symbol
+   * @param {Boolean} unique (Optional) Return full/unique name (e.g. Stage_ResponsiveElement)
    * @return {String} name of symbol (e.g. Stage_ResponsiveElement)
    */
   EC.getSymbolName = function (sym, unique) {
@@ -141,8 +444,8 @@
    * @memberof Core
    * @example
    * // TODO
-   * @param sym {AnimateSymbol} Reference to a Animate symbol (does not matter which one)
-   * @param [scriptClassSelector] {String} (Optional) Class of the container script-Tag (default: "data")
+   * @param {AnimateSymbol} sym Reference to a Animate symbol (does not matter which one)
+   * @param {String} scriptClassSelector (Optional) Class of the container script-Tag (default: "data")
    * @return {Object} The injected (JSON) data as object
    */
   EC.getInjectedData = function (sym, scriptClassSelector) {
@@ -178,11 +481,11 @@
    * @memberof Core
    * @example
    * // TODO
-   * @param adaptiveLayouts {Array} Array with dimensions of alternative layouts
-   * @param sym {AnimateSymbol} Reference to a Animate symbol (e.g. stage)
-   * @param adaptiveContainer {Element} The container where the layout symbols should be placed
-   * @param [callback] {Function} (Optional) Callback to be executed on layout switch
-   * @param [useWindowInsteadOfStage] {Boolean} (Optional) If true the window width is used for calculations (necessary if you have a fix stage that is centered (e.g. with EC.centerStage())) (default: false)
+   * @param {Array} adaptiveLayouts Array with dimensions of alternative layouts
+   * @param {AnimateSymbol} sym Reference to a Animate symbol (e.g. stage)
+   * @param {Element} adaptiveContainer The container where the layout symbols should be placed
+   * @param {Function} callback (Optional) Callback to be executed on layout switch
+   * @param {Boolean} useWindowInsteadOfStage (Optional) If true the window width is used for calculations (necessary if you have a fix stage that is centered (e.g. with EC.centerStage())) (default: false)
    * @return {Boolean} always true
    */
   EC.setAdaptiveLayouts = function (adaptiveLayouts, sym, adaptiveContainer, callback, useWindowInsteadOfStage) {
@@ -275,11 +578,11 @@
    * @memberof Core
    * @example
    * //TODO
-   * @param sym {AnimateSymbol} The symbol to convert
-   * @param [label] {String} (Optional) the label of the button (the affected symbol needs to implement a textfield or DIV named "label")
-   * @param [icon] {String} (Optional) path to an icon file (e.g. SVG or PNG) relative to the main HTML file
-   * @param [clickHandle] {Function} callback for click/touch event
-   * @param [data] {Object} (Optional) data object that will be passed to the button instance and will be available in clickHandler callback as second argument
+   * @param {AnimateSymbol} sym          The symbol to convert
+   * @param {String}        label        (Optional) the label of the button (the affected symbol needs to implement a textfield or DIV named "label")
+   * @param {String}        icon         (Optional) path to an icon file (e.g. SVG or PNG) relative to the main HTML file
+   * @param {Function}      clickHandler (Optional) callback for click/touch event
+   * @param {Object}        data         (Optional) data object that will be passed to the button instance and will be available in clickHandler callback as second argument
    * @return {Boolean} always true
    */
   EC.makeStaticButton = function (sym, label, icon, clickHandler, data) {
@@ -324,11 +627,11 @@
    * @memberof Core
    * @example
    * //TODO
-   * @param sym {AnimateSymbol} The symbol to convert
-   * @param [label] {String} (Optional) the label of the button (the affected symbol needs to implement a textfield or DIV named "label")
-   * @param [icon] {String} (Optional) path to an icon file (e.g. SVG or PNG) relative to the main HTML file
-   * @param [clickHandler] {Function} (Optional) callback for click/touch event
-   * @param [data] {Object} (Optional) data object that will be passed to the button instance and will be available in clickHandler callback as second argument
+   * @param {AnimateSymbol} sym          The symbol to convert
+   * @param {String}        label        (Optional) the label of the button (the affected symbol needs to implement a textfield or DIV named "label")
+   * @param {String}        icon         (Optional) path to an icon file (e.g. SVG or PNG) relative to the main HTML file
+   * @param {Function}      clickHandler (Optional) callback for click/touch event
+   * @param {Object}        data         (Optional) data object that will be passed to the button instance and will be available in clickHandler callback as second argument
    * @return {Boolean} always true
    */
   EC.makeAnimatedButton = function (sym, label, icon, clickHandler, data) {
@@ -419,11 +722,11 @@
    * @memberof Core
    * @example
    * //TODO
-   * @param selector {String} the CSS selector (e.g. ".item-active")
-   * @param properties {Object} object with all CSS properties
-   * @param [index] {Integer} (Optional) the index of the selector (useful for hierarchy control, default: 1)
+   * @param {String}    selector   the CSS selector (e.g. ".item-active")
+   * @param {Object}    properties object with all CSS properties
+   * @param {Integer}   index      (Optional) the index of the selector (useful for hierarchy control, default: 1)
    * @return {Boolean} always true
-   */
+   */    
   EC.addCSS = function (selector, properties, index) {
     index = (index) ? index : 0;
 
@@ -462,7 +765,7 @@
   //==================================================
   // Symbols and Triggers
   //==================================================  
-
+  
   /**
    * Get all children of a symbols (recursive or immediate children only)<br/>
    * @memberof Core
@@ -470,12 +773,12 @@
    * //TODO
    * console.log( "stage: ", getChildSymbols(sym) );
    * console.log( "stage: ", getChildSymbols(sym, false) );
-   * console.log( "MySymbol1: ", getChildSymbols(sym.getSymbol("MySymbol1")) );
-   * @param sym {AnimateSymbol} the affected symbol
-   * @param [recursive] {Boolean} if 'false' only immediate children will be returned otherwise all children and grand-children well be returned
-   * @param [result] {null|Array} (Optional) only used for recursion
+   * console.log( "MySymbol1: ", getChildSymbols(sym.getSymbol("MySymbol1")) );   
+   * @param {AnimateSymbol} sym       the affected symbol
+   * @param {Boolean}       recursive if 'false' only immediate children will be returned otherwise all children and grand-children well be returned 
+   * @param {null|Array}    result    (Optional) only used for recursion
    * @return {Array} list with all available symbols
-   */
+   */      
   EC.getChildSymbols = function (sym, recursive, result) {
     // Arguments and defaults
     recursive = (recursive !== false) ? true : false;
@@ -502,15 +805,14 @@
   //==================================================
   // Pause/Unpause
   //==================================================
-
+  
   /**
    * Pause/Unpause (internal function)
-   * @ignore
-   * @param sym {AnimateSymbol} symbol
-   * @param flag {Boolean} pause (false) or unpause (true)
-   * @param [recursive] {Boolean}  pause all sub symbols
-   * @return {Array} list with all available symbols
-   */
+   * @param {AnimateSymbol} sym       symbol
+   * @param {Boolean}       flag      pause (false) or unpause (true)
+   * @param {Boolean}       recursive pause all sub symbols
+   * @return {Array}        list with all available symbols
+   */  
   function _handlePause(sym, flag, recursive) {
     try {
       // Gather effected symbol instances
@@ -550,24 +852,24 @@
    * @memberof Core
    * @example
    * //TODO
-   * @param sym {AnimateSymbol} symbol
-   * @param [recursive] {Boolean} pause all sub symbols
+   * @param {AnimateSymbol} sym symbol
+   * @param {Boolean} recursive pause all sub symbols   
    * @return {Boolean} always true
-   */
+   */  
   EC.pause = function (sym, recursive) {
     _handlePause(sym, false, recursive);
     return true;
   }
-
+  
   /**
    * Unpause a symbol
    * @memberof Core
    * @example
    * //TODO
-   * @param sym {AnimateSymbol} symbol
-   * @param [recursive] {Boolean} pause all sub symbols
+   * @param {AnimateSymbol} sym symbol
+   * @param {Boolean} recursive pause all sub symbols      
    * @return {Boolean} always true
-   */
+   */  
   EC.unpause = function (sym, recursive) {
     _handlePause(sym, true, recursive);
     return true;
@@ -609,10 +911,10 @@
    *      comp.getStage().$("mytext").html("hello number 2");
    *      comp.getStage().$('targetContainer').append("<hr/>HUHU  222<hr/>");
    *   });
-   * @param src {String} Path to HTML file to load
-   * @param symbolOrElement {Element|AnimateSymbol} The target container where the external composition should be placed (element or symbol)
-   * @param [callback] {Function} (Optional) Callback to be called when loading composition is completed and external composition is fully built
-   * @return {Boolean} true Always returns true
+   * @param {String}                src             Path to HTML file to load
+   * @param {Element|AnimateSymbol} symbolOrElement The target container where the external composition should be placed (element or symbol)
+   * @param {Function}              callback        (Optional) Callback to be called when loading composition is completed and external composition is fully built
+   * @return {Boolean}              true Always returns true
    */
   EC.loadComposition = function (src, symbolOrElement, callback) {
     // Check arguments 

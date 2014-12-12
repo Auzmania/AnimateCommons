@@ -1,3 +1,5 @@
+// EdgeCommons for Edge Animate v2.0.4 +++ Visit edgecommons.org for documentation, updates and examples +++ Copyright (c) 2015 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.
+
 /*
  * EdgeCommons
  * Dirty little Helpers for Adobe Edge
@@ -54,24 +56,20 @@
   //------------------------------------
   // Methods
   //------------------------------------  
-  
   /**
-   * Convert SVG to be accessible for scripting
-   * @alias EC.accessSVG
-   * @memberof SVG
-   * @example
-   * // Make SVG accessible for scripting
-   * EC.accessSVG( sym.$("pie") ).done(function(svgDocument, svgElement, uniqueId){
-   *   EC.debug("DONE");
-   *   var el = svgDocument.getElementById("Cyan");
-   *   $(el).attr({fill: "#000"});
-   *   $(el).click(function(){
-   *     alert("DYNAMIC CLICK ON INNER PATH");
-   *   });				
-   * });
-   * @param element {Element} The div container holding the SVG
-   * @return {Object} jQuery promise
-   */  
+    Convert SVG to be accessible
+        <pre>
+		EC.SVG.accessSVG( sym.$("pie") )
+			.done(function(svgDocument, svgElement, uniqueId){
+				EC.debug("DONE");
+				var el = svgDocument.getElementById("Cyan");
+				$(el).attr({fill: "#000"});
+				$(el).click(function(){
+					alert("DYNAMIC CLICK ON INNER PATH");
+				});				
+			});  
+        </pre>
+    **/
   C.accessSVG = function (element) {
     if (element.is("div")) {
       var imgSrc = element.css("background-image").replace("url(", "").replace(")", "");

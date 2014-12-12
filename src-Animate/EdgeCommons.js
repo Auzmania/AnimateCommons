@@ -28,29 +28,14 @@
  * - Adobe Edge API
  * - Modulog
  * - YepNope
- * - SoundJS (CreateJS)
  * --------------------------------------------------------------------------------------------------------------------------------------------------
- * Features:
- * #Core
- * - Advanced Logging and Config with Modulog
- * - Loading external Scripts and Style Sheets with YepNope
- * - Injecting Data
- * #Sound
- * - Load and play sounds with SoundJS (CreateJS)
- * #Preload
- * - PreloadJS (uses by SoundJS) (CreateJS)
  */
 
+ 
 /**
-TODO: DESCRIPTION FOR MASTER
-
-
-@module EdgeCommons
-**/
-
-
-
-// Workaround to find the right $
+ * Workaround to find the right $
+ * @ignore
+ */
 var ___ec$;
 try {
   ___ec$ = $;
