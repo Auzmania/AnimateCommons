@@ -3,7 +3,7 @@
 //================================================
 var customConfig = {
   an: {
-    version: "2.0.5" 
+    version: "2.0.0" 
   },
   rf: {
     version: "0.0.4"
@@ -89,7 +89,7 @@ module.exports = function(grunt) {
         src:  'doc/template/config.json',
         dest: 'doc/template/',
         replacements: [
-          {from: /(v\d+.\d+.\d)/, to: customConfig.an.version}
+          {from: /(v\d+.\d+.\d)/, to: 'v'+customConfig.an.version}
         ]
       }
     });

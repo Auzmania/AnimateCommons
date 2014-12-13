@@ -44,9 +44,12 @@ exports.publish = function(data, opts) {
     
     // Fill template
     tplIndex = tplIndex.replace("#HEAD_TITLE#", config.custom_title);
+    tplIndex = tplIndex.replace("#OVERVIEW-TITLE#", config.custom_title);
+    tplIndex = tplIndex.replace("#OVERVIEW-SUBTITLE#", config.subtitle);
     
-    // Create bodyHTML
+    // Create HTMLs
     var bodyHTML = "";
+    var overviewHTML = "";
 
     // Remove undocumented (taken from haruki template)
     data({undocumented: true}).remove();
@@ -68,6 +71,9 @@ exports.publish = function(data, opts) {
       bodyHTML += '<div class="section-namespace">';
       bodyHTML += '<h1>'+namespace.name+'</h1>';
       bodyHTML += '<h2>'+namespace.description+'</h2>';
+      
+      // Overview
+      overviewHTML += '<div class="namespace"><p class="namespace">'+namespace.name+'</p>';
       
       //==================================================
       // Functions
@@ -111,8 +117,9 @@ exports.publish = function(data, opts) {
         
         //--------------------------------------------------  
         // Put it all together
-        //--------------------------------------------------  
-        bodyHTML += '<div class="section-function">';
+        //-------------------------------------------------- 
+        var anchor = func.name.replace(".", "_")+"_"+Math.random().toString(36).substring(7);
+        bodyHTML += '<div id="'+anchor+'" class="section-function">';
         bodyHTML += '<p class="func-signature"><strong>'+func.name+'(</strong> '+paramsSignatureString+' <strong>)</strong> : ' + returnString + '</p>';
         bodyHTML += '<p class="func-description">'+func.description+'</p>';
         bodyHTML += paramsTablebodyHTML;            
@@ -121,14 +128,19 @@ exports.publish = function(data, opts) {
         
         // Finalize function
         bodyHTML += '</div>';
+        
+        // Overview
+        overviewHTML += '<p class="function"><a href="#" onclick="scrollToAnchor('+anchor+')">'+func.name+'</a></p>';
       });
       
       // Finalize namespace
       bodyHTML += '</div>';
+      overviewHTML += '</div>';
     });
     
-    // Fill template (body)
+    // Fill template
     tplIndex = tplIndex.replace("#BODY#", bodyHTML);
+    tplIndex = tplIndex.replace("#OVERVIEW#", overviewHTML);
     
     //write(bodyHTML, opts);
     write(tplIndex, opts);

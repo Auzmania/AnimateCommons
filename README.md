@@ -5,27 +5,25 @@
 
 ***
 
-Current realease: 2.0.2
+Current realease: 2.0.0beta
 
 ***
 
 History:
 
-[ 2.0.x ]
-+ (MOVED TO UBR) checkVisibility and autoplayOnVisibility
+[ 2.0.0beta ]
++ Get rid of the jQuery dependency (where possible) 
 + EC.pause() and EC.unpause() added (both support recursive flag)
 + EC.getChildSymbols() /w as recursive function added (needed for pause/unpause)
 + EC.addCSS(...) added
-+ Get rid of the jQuery dependency (where possible) 
 + Parallax: no jquery dep
 + Adaptive Layout: no jquery dep
 + Adaptive Layout: now supports option "useWindowInsteadOfStage" (works great with EC.centerStage())
 + EC.isJQuery(): Helper to find out if full jQuery is available 
 + EC.centerStage() is now REAL centering stage (even with negative left position) 
 + EC.centerElement() added to center Elements
-+ EC.Sound package is no longer included in "All in one" package
-+ (MOVED TO UBR) setMetaViewport: Set the viewport metatag
 + loadComposition: promise substituted with callback (no more jquery dep)
++ EC.Sound package is no longer included in "All in one" package
 
 [ 1.4.0 ]
 + Parallax Update: Fix for Animate 5.x (thanks to psaunders)
