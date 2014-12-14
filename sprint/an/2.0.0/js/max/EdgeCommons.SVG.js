@@ -58,11 +58,11 @@
   //------------------------------------  
   
   /**
-   * Convert SVG to be accessible for scripting<br/>
+   * Convert SVG to be accessible for scripting
    * This feature requires jQuery to be loaded. Get the latest jQuery library here: http://code.jquery.com<br/>
    * @alias EC.accessSVG
    * @memberof SVG
-   * @example
+   * @example Make SVG accessible for scripting
    * // Make SVG accessible for scripting
    * EC.accessSVG( sym.$("pie") ).done(function(svgDocument, svgElement, uniqueId){
    *   EC.debug("DONE");

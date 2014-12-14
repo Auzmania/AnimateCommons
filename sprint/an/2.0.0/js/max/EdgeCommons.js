@@ -327,12 +327,6 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
  */
 
 
-
-/*
- * Module: Core
- */
-
-
 /**
  * The core module of EdgeCommons
  * @namespace Core
@@ -374,10 +368,11 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   //==================================================  
 
   /**
-   * Set adaptive layouts (distinct symbols for for specific layout dimensions)<br/>
-   * {{Documentation needs revision}}
+   * Set adaptive layouts 
+   * (distinct symbols for for specific layout dimensions)<br/>
+   * {{TODO Documentation needs revision}}
    * @memberof Core
-   * @example
+   * @example TODO
    * // TODO
    * @param adaptiveLayouts {Array} Array with dimensions of alternative layouts
    * @param sym {AnimateSymbol} Reference to a Animate symbol (e.g. stage)
@@ -469,12 +464,13 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   //==================================================    
 
   /**
+   * Create static button 
    * Convert a given symbol to a static button component with three states (normal, over and down)<br/>
    * Implement the three button states (normal, over, down) as labels on the symbol's timeline<br/>
-   * A optional "hotspot" element is supported within the symbol to handle all events (click/touch/mouseenter etc.)<br/>
+   * An optional "hotspot" element is supported within the symbol to handle all events (click/touch/mouseenter etc.)<br/>
    * Touch enabled: in mobile environments just a tap/click listener will be attached (no states are supported)<br/>
    * @memberof Core
-   * @example
+   * @example TODO
    * //TODO
    * @param sym {AnimateSymbol} The symbol to convert
    * @param [label] {String} (Optional) the label of the button (the affected symbol needs to implement a textfield or DIV named "label")
@@ -519,11 +515,12 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   }
 
   /**
-   * Convert a given symbol to an animated button component that will be played forward and backward on mouse events<br/>
-   * A optional "hotspot" element is supported within the symbol to handle all events (mouseenter etc.)<br/>
-   * Touch enabled: in mobile environments just a tap/click listener will be attached (no states are supported)<br/>
+   * Create animated button
+   * Convert a given symbol to an animated button component that will be played forwards and backwards on mouse events.
+   * An optional "hotspot" element is supported within the symbol to handle all events (mouseenter etc.). <br/>
+   * Touch enabled: in mobile environments just a tap/click listener will be attached (no states are supported).<br/>
    * @memberof Core
-   * @example
+   * @example TODO
    * //TODO
    * @param sym {AnimateSymbol} The symbol to convert
    * @param [label] {String} (Optional) the label of the button (the affected symbol needs to implement a textfield or DIV named "label")
@@ -616,11 +613,17 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   };
 
   /**
-   * Add custom CSS rules at runtime<br/>
+   * Add custom CSS rules at runtime
+   * This function doesn't add CSS styles inline, but defines global CSS rules like you would have with an externally linked CSS file.
+   * You can apply the CSS rules to elements in Animate by added CSS classes in the property inspector.<br/>
    * Use <code>!important</code> statement on property level to prevent Animate to override the property.<br/>
    * @memberof Core
-   * @example
-   * //TODO
+   * @example Add a CSS class at runtime
+   * // Add CSS rule for class 'custom-box'
+   * EC.addCSS(".custom-box", {
+   *   "background-color": "rgba(217,68,148,1.00) !important",
+   *   "border-radius": "16px"
+   * });
    * @param selector {String} the CSS selector (e.g. ".item-active")
    * @param properties {Object} object with all CSS properties
    * @param [index] {Integer} (Optional) the index of the selector (useful for hierarchy control, default: 1)
@@ -667,10 +670,10 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
 
 
   /**
-   * Real Center Stage (fullscreen compatible)<br/>
-   * This function even centers the stage even if left value becomes negative
+   * Real Center Stage (fullscreen compatible) (maybe deprecated)
+   * This function even centers the stage even if left value becomes negative<br/>
    * @memberof Core
-   * @example
+   * @example TODO
    * // TODO
    * @param sym {AnimateSymbol} Reference to any symbol of the affected composition
    * @param [showHorizontalScrollbar] {Boolean} (Optional) Flag to hide scrollbar on body (true|false, default: false)
@@ -692,15 +695,16 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   }
 
   /**
-   * Center an element and keep it centered<br/>
-   * This function even works with a flexible stage (%-based)<br/>
+   * Center an element
+   * Center an element and keep it centered. This function even works with a flexible stage (%-based)<br/>
    * Known issues:<br/>
-   * If the affected element resizes you have to call this function again<br/>
-   * Does not consider rotation/scaling<br/>
-   * Does currently NOT work with symbol element (since we are not considering transform/translate)
+   * + If the affected element resizes you have to call this function again<br/>
+   * + Does not consider rotation/scaling<br/>
+   * + Does currently NOT work with symbol element (since we are not considering transform/translate)
    * @memberof Core
-   * @example
-   * // TODO
+   * @example Center element
+   * // Center element named "myElement"
+   * EC.centerElement( sym.$("myElement") );
    * @param el {Element} Element reference (type: AdobeEdge.$ or jQuery element)
    * @return {Boolean} Always true
    */
@@ -719,10 +723,19 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
 
   /**
    * Get the name of a symbol
-   * (if name should be used in sym.getSymbol(NAME) the preceding "#" is necessary)
+   * Get the full name of a symbol (e.g. Stage_ResponsiveElement). 
+   * This function is handy if you are working with dynamically created symbols 
+   * and you don't define the symbol's name yourself.<br/>
+   * (If name should be used in sym.getSymbol(NAME) the preceding "#" is necessary)
    * @memberof Core
-   * @example
-   * // TODO
+   * @example Get the name of a symbol
+   * // Create symbol dynamically
+   * var newSymbol = sym.createChildSymbol( "MyButton", sym.$("navigation") );
+   * // Get the name of a symbol
+   * var name = EC.getSymbolName( sym.getSymbol(newSymbol) );
+   * // Use symbol name to get reference to a symbol instance 
+   * //(e.g. to control the timeline)
+   * sym.getSymbol( name ).play();
    * @param sym {AnimateSymbol} Reference to a Animate symbol
    * @param [unique] {Boolean} (Optional) Return full/unique name (e.g. Stage_ResponsiveElement)
    * @return {String} name of symbol (e.g. Stage_ResponsiveElement)
@@ -738,13 +751,14 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
     }
     name = name.replace("#", "");
     return name;
-  };  
-  
+  };
+
   /**
-   * Get all children of a symbols (recursive or immediate children only)<br/>
+   * Get all children of a symbol
+   * This function returns all children of a symbol (recursive or immediate children only)
    * @memberof Core
-   * @example
-   * //TODO
+   * @example Get all children of a symbol
+   * // Usage
    * console.log( "stage: ", getChildSymbols(sym) );
    * console.log( "stage: ", getChildSymbols(sym, false) );
    * console.log( "MySymbol1: ", getChildSymbols(sym.getSymbol("MySymbol1")) );
@@ -824,8 +838,11 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
 
   /**
    * Pause a symbol
+   * With this function you can pause and unpasue each and every symbol (timeline) with or without all it's children (optionally recursive). 
+   * The advantage of EC.pause(...) is that all playback states are stored for proper usage of unpause.<br/>
+   * The stopAll() and playAll() functions from the official Animate API are not really useful (ALL symbols are started, no matter if they were playing or pausing before)<br/>
    * @memberof Core
-   * @example
+   * @example TODO
    * //TODO
    * @param sym {AnimateSymbol} symbol
    * @param [recursive] {Boolean} pause all sub symbols
@@ -838,8 +855,9 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
 
   /**
    * Unpause a symbol
+   * See EC.pause() for more details
    * @memberof Core
-   * @example
+   * @example TODO
    * //TODO
    * @param sym {AnimateSymbol} symbol
    * @param [recursive] {Boolean} pause all sub symbols
@@ -861,10 +879,11 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   //==================================================  
 
   /**
-   * Figure out if full jQuery is used
+   * Find out if full jQuery is used
    * @memberof Core
-   * @example
-   * //TODO
+   * @example Is full jQuery in use?
+   * // Check if full jQuery is in use
+   * console.log( "jQuery is available: ", EC.isJQuery() );
    * @return {Boolean} true if jQuery is used, otherwise false
    */
   EC.isJQuery = function () {
@@ -872,14 +891,32 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   }
 
   /**
-   * Get injected data (JSON formatted) from HTML wrapper of the stage<br/>
+   * Get injected data 
+   * Use this function to read injected data (JSON formatted) from the HTML wrapper of the stage.<br/>
+   * Great for dynamic content and CMS integration.<br/>
    * This feature requires jQuery to be loaded. Get the latest jQuery library here: http://code.jquery.com<br/>
    * @memberof Core
-   * @example
-   * // TODO
-   * @param sym {AnimateSymbol} Reference to a Animate symbol (does not matter which one)
-   * @param [scriptClassSelector] {String} (Optional) Class of the container script-Tag (default: "data")
-   * @return {Object} The injected (JSON) data as object
+   * @example Get injected data (title and message)
+   * // The HTML of the composition with data injection looks like this:
+   * // <div id="Stage" class="EDGE-145692202">
+   * //   <script class="data" type="text/text">
+   * //   { 
+   * //     "title": "I'm injected", 
+   * //     "message": "This text was injected from HTML"
+   * //   }
+   * //   </script>
+   * // </div>   
+   * 
+   * // Read injected data from HTML into Animate composition. 
+   * var data = EC.getInjectedData(sym);
+   * 
+   * // Render injected data
+   * sym.$("txtTitle").html( data.title );
+   * sym.$("txtMessage").html( data.message );
+   * 
+   * @param sym {AnimateSymbol}       Reference to a Animate symbol (does not matter which one)
+   * @param [scriptClassSelector] {String}              (Optional) Class of the container script-Tag (default: "data")
+   * @return {Object}   The injected (JSON) data as object
    */
   EC.getInjectedData = function (sym, scriptClassSelector) {
     try {
@@ -902,8 +939,8 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
     } catch (error) {
       Log.error("Reading injected data failed (scriptClassSelector=" + scriptClassSelector + ")", LOG_GROUP, error);
     }
-  };  
-  
+  };
+
   /**
    * Load external composition<br/>
    * TODO: UPDATE DOC: promise substituted with callback (no more jquery dep)
@@ -992,11 +1029,15 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   };
 
   /**
-   * Detect a mobile environment (e.g. to switch to gestures instead of mouse input)<br/>
-   * Mobile user agents supported: Android, iPhone/iPad/iPod, Opera Mini and IEMobile
+   * Detect a mobile environment
+   * If you want to find out if the composition is running on a mobile device
+   * you can use this function (e.g. to switch to gestures instead of mouse input)<br/>
+   * Mobile user agents supported: Android, iPhone/iPad/iPod, Opera Mini and IEMobile.<br/>
+   * Also consider using EC.CLICK_OR_TOUCH constant for event handler.
    * @memberof Core
-   * @example
-   * //TODO
+   * @example Is composition running on a mobile device?
+   * // Is composition running on a mobile device?
+   * console.log( "This is a mobile device: ", EC.isMobile() );
    * @return {Boolean} true if mobile environment was detected otherwise false
    */
   EC.isMobile = function () {
@@ -1023,11 +1064,70 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   //------------------------------------
   EC.Core = C;
 
-  // Expose Logging
+
+  //================================================== 
+  // Expose Modulog
+  //================================================== 
   EC.Log = Log;
+  /**
+   * Logging: debug
+   * Send a message in debug mode to the console or a custom target (for logging and debugging)  
+   * @memberof Core
+   * @function debug
+   * @alias EC.debug
+   * @example Log in debug mode
+   * // Log in debug mode
+   * var LOG_GROUP = "My Module";
+   * EC.debug( "Hello logger", LOG_GROUP );
+   * @param msg        {String} Logging message
+   * @param group      {String} Logging group
+   * @param [object]   {Object} (Optional) Object to dump
+   */
   EC.debug = Log.debug;
+  /**
+   * Logging: info
+   * Send a message in info mode to the console or a custom target (for logging and debugging)  
+   * @memberof Core
+   * @function info
+   * @alias EC.info
+   * @example Log in info mode
+   * // Log in info mode
+   * var LOG_GROUP = "My Module";
+   * EC.info( "Hello logger", LOG_GROUP );
+   * @param msg        {String} Logging message
+   * @param group      {String} Logging group
+   * @param [object]   {Object} (Optional) Object to dump
+   */  
   EC.info = Log.info;
+  /**
+   * Logging: warn
+   * Send a message in warn mode to the console or a custom target (for logging and debugging)  
+   * @memberof Core
+   * @function warn
+   * @alias EC.warn
+   * @example Log in warn mode 
+   * // Log in warn mode
+   * var LOG_GROUP = "My Module";
+   * EC.warn( "Hello logger", LOG_GROUP );
+   * @param msg        {String} Logging message
+   * @param group      {String} Logging group
+   * @param [object]   {Object} (Optional) Object to dump
+   */  
   EC.warn = Log.warn;
+  /**
+   * Logging: error
+   * Send a message in error mode to the console or a custom target (for logging and debugging)  
+   * @memberof Core
+   * @function error
+   * @alias EC.error
+   * @example Log in error mode
+   * // Log in error mode
+   * var LOG_GROUP = "My Module";
+   * EC.error( "Hello logger", LOG_GROUP );
+   * @param msg {String} Logging message
+   * @param group {String} Logging group
+   * @param [object] {Object} (Optional) Object to dump
+   */  
   EC.error = Log.error;
 
   // Expose Configuration
@@ -1130,10 +1230,14 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   }
 
   /**
-   * Setup Parallax Scrolling for a specific composition
+   * Setup Parallax Scrolling 
+   * Setup simple Parallax Scrolling for a specific composition.<br/>
+   * Known issues:<br/>
+   * + this simple Parallax Scrolling does not work on mobile devices 
+   * (Check out UBR.Parallax for a more advanced Parallax Scrolling that even performs great on mobile devices (TODO: Add link))<br/>
    * @alias EC.setup
    * @memberof Parallax
-   * @example
+   * @example Setup Parallax Scrolling
    * // Setup Parallax Scrolling
    * // MUST be in compositionReady (NOT IN creationComplete)
    * EC.Parallax.setup( sym );
@@ -1262,9 +1366,12 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
 
 
   /**
-   * Open a spotlight overlay by passing in a configuration object
+   * Open a spotlight overlay 
+   * Open a spotlight overlay by passing in a configuration object.<br/>
    * @alias EC.open
    * @memberof Spotlight
+   * @example TODO
+   * // TODO
    * @param config {Object} The configuration object  
    * <pre>
    * var config = {
@@ -1420,8 +1527,8 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   };
 
   /**
-   * Close an existing spotlight overlay<br/>
-   * (This function usually gets called by the internal close button automatically)
+   * Close an existing spotlight overlay
+   * (This function usually gets called internally by the close button automatically)
    * @alias EC.close
    * @memberof Spotlight
    * @param config {Object} The configuration object  
@@ -1533,11 +1640,11 @@ ___ec$.extend(AdobeEdge.Symbol.prototype, {
   //------------------------------------  
   
   /**
-   * Convert SVG to be accessible for scripting<br/>
+   * Convert SVG to be accessible for scripting
    * This feature requires jQuery to be loaded. Get the latest jQuery library here: http://code.jquery.com<br/>
    * @alias EC.accessSVG
    * @memberof SVG
-   * @example
+   * @example Make SVG accessible for scripting
    * // Make SVG accessible for scripting
    * EC.accessSVG( sym.$("pie") ).done(function(svgDocument, svgElement, uniqueId){
    *   EC.debug("DONE");

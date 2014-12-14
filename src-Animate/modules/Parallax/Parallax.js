@@ -92,10 +92,14 @@
   }
 
   /**
-   * Setup Parallax Scrolling for a specific composition
+   * Setup Parallax Scrolling 
+   * Setup simple Parallax Scrolling for a specific composition.<br/>
+   * Known issues:<br/>
+   * + this simple Parallax Scrolling does not work on mobile devices 
+   * (Check out UBR.Parallax for a more advanced Parallax Scrolling that even performs great on mobile devices (TODO: Add link))<br/>
    * @alias EC.setup
    * @memberof Parallax
-   * @example
+   * @example Setup Parallax Scrolling
    * // Setup Parallax Scrolling
    * // MUST be in compositionReady (NOT IN creationComplete)
    * EC.Parallax.setup( sym );

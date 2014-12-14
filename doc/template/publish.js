@@ -19,6 +19,10 @@ var hasOwnProp = Object.prototype.hasOwnProperty;
 */
 
 
+// from http://css-tricks.com/snippets/javascript/htmlentities-for-javascript/
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
 
 /**
@@ -78,27 +82,49 @@ exports.publish = function(data, opts) {
       //==================================================
       // Functions
       //==================================================
-      // Get all functions
+      
+      // Apply aliases if available
       data({kind: "function", memberof: namespace.name}).each( function (func) {
+        if (func.alias) { 
+          func.name = func.alias;
+          func.alias = undefined;
+        }
+      });
+      
+      // Get all functions
+      data({kind: "function", memberof: namespace.name}).order("name").each( function (func) {
         //console.error("func: ", func.params && func.params.length);
+        
+        //--------------------------------------------------
+        // Extract title (first line) and description (everything else)
+        //--------------------------------------------------
+        var title = func.description.split("\n", 1); 
+        var description = func.description.replace(title, ""); 
         
         //--------------------------------------------------
         // Params
         //--------------------------------------------------
         var paramsSignatureString = "",
-            paramsTablebodyHTML = '<table class="parameters">#ROWS</table>',
-            paramsRowsbodyHTML = '<tr><th>Parameter</th><th>Type</th><th>Description</th></tr>';
+            paramsTablebodyHTML = "",
+            paramsRowsbodyHTML;
         if (func.params) {
+          paramsTablebodyHTML = '<table class="parameters">#ROWS</table>',
+          paramsRowsbodyHTML = '<tr><th>Parameter</th><th>Type</th><th>Description</th></tr>';
           for (var pI = 0; pI < func.params.length; pI++) {
             var param = func.params[pI];
             //console.error(param);
             // signature string. e.g. myFunction([paramsSignatureString]) : returnType
             paramsSignatureString += ((param.optional) ? "[" : "" ) + param.name + ((param.optional) ? "]" : "" ) + ", ";
-            paramsRowsbodyHTML += '<tr><td>'+param.name+'</td><td>'+param.type.names[0]+'</td><td>'+param.description+'</td></tr>';
+            // Get all available param types (separated by "|")
+            var paramTypesArray = [];
+            for (var typeI = 0; typeI < param.type.names.length; typeI++) {
+              paramTypesArray.push( param.type.names[typeI] );
+            }
+            paramsRowsbodyHTML += '<tr><td>'+param.name+'</td><td>'+paramTypesArray.join(" | ")+'</td><td>'+param.description+'</td></tr>';
           }
+          // Prepare table
+          paramsTablebodyHTML = paramsTablebodyHTML.replace("#ROWS", paramsRowsbodyHTML);
         }
-        // Prepare table
-        paramsTablebodyHTML = paramsTablebodyHTML.replace("#ROWS", paramsRowsbodyHTML);
         // Remove last ", " in signature
         paramsSignatureString = paramsSignatureString.substr(0, paramsSignatureString.length-2);
 
@@ -112,16 +138,25 @@ exports.publish = function(data, opts) {
 
         //--------------------------------------------------
         // Example
-        //--------------------------------------------------        
-        var examplesbodyHTML = '<p>Examples:</p>' + ((func.examples) ? '<pre class="examples">' + func.examples + '</pre>' : '');
-        
+        //--------------------------------------------------
+        var examplesbodyHTML = "";
+        if (func.examples && func.examples.length > 0) {
+          for (var exmplI = 0; exmplI < func.examples.length; exmplI++) {
+            var example = func.examples[exmplI];
+            var firstLineTitle = example.split("\n", 1);
+            var code = example.replace(firstLineTitle+"\n", "");
+            examplesbodyHTML += '<br/><br/><strong>Example:</strong> '+firstLineTitle+'<br/><pre class="examples"><code>' + htmlEntities(code) + '</code></pre>';
+          }
+        }
+
         //--------------------------------------------------  
         // Put it all together
         //-------------------------------------------------- 
         var anchor = func.name.replace(".", "_")+"_"+Math.random().toString(36).substring(7);
         bodyHTML += '<div id="'+anchor+'" class="section-function">';
         bodyHTML += '<p class="func-signature"><strong>'+func.name+'(</strong> '+paramsSignatureString+' <strong>)</strong> : ' + returnString + '</p>';
-        bodyHTML += '<p class="func-description">'+func.description+'</p>';
+        bodyHTML += '<p class="func-title">'+title+'</p>';
+        bodyHTML += '<p class="func-description">'+description+'</p>';
         bodyHTML += paramsTablebodyHTML;            
         bodyHTML += returnbodyHTML;            
         bodyHTML += examplesbodyHTML;
@@ -130,7 +165,7 @@ exports.publish = function(data, opts) {
         bodyHTML += '</div>';
         
         // Overview
-        overviewHTML += '<p class="function"><a href="#" onclick="scrollToAnchor('+anchor+')">'+func.name+'</a></p>';
+        overviewHTML += '<p class="function"><a href="#" onclick="scrollToAnchor('+anchor+')">'+(func.alias || func.name)+'</a></p>';
       });
       
       // Finalize namespace

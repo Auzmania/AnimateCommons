@@ -62,9 +62,12 @@
 
 
   /**
-   * Open a spotlight overlay by passing in a configuration object
+   * Open a spotlight overlay 
+   * Open a spotlight overlay by passing in a configuration object.<br/>
    * @alias EC.open
    * @memberof Spotlight
+   * @example TODO
+   * // TODO
    * @param config {Object} The configuration object  
    * <pre>
    * var config = {
@@ -220,8 +223,8 @@
   };
 
   /**
-   * Close an existing spotlight overlay<br/>
-   * (This function usually gets called by the internal close button automatically)
+   * Close an existing spotlight overlay
+   * (This function usually gets called internally by the close button automatically)
    * @alias EC.close
    * @memberof Spotlight
    * @param config {Object} The configuration object  
