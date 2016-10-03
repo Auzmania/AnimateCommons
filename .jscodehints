@@ -1,3 +1,0 @@
-{               
-     "excluded-directories" : ["release", "sprint", "libs", "node_modules"]
-}
