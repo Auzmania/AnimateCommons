@@ -1,0 +1,20 @@
+{
+  "name": "animate_commons",
+  "version": "1.0.0",
+  "description": "Animate Commons - dirty little helpers for Adobe Animate CC",
+  "keywords": [
+    "Adobe",
+    "Animate",
+    "CC",
+    "Extension"
+  ],
+  "author": "Simon Widjaja",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.0.0",
+    "require-dir": "^0.3.0"
+  }
+}
