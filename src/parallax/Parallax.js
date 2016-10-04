@@ -1,7 +1,14 @@
 ////////////////////////////////////////////////////
 // Parallax
 ////////////////////////////////////////////////////
+
+
 (function (AC, AnimateCommons) {
+
+  /**
+   * Parallax
+   * @namespace Parallax
+   */
   AC.Parallax = {
     /**
      * Setup Parallax

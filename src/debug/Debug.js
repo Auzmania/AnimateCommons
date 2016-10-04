@@ -2,6 +2,11 @@
 // Debug
 ////////////////////////////////////////////////////
 (function (AC, AnimateCommons) {
+
+  /**
+   * Debug
+   * @namespace Debug
+   */
   AC.Debug = {
 
     /**

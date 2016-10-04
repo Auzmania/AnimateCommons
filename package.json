@@ -9,10 +9,16 @@
     "Extension"
   ],
   "author": "Simon Widjaja",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simonwidjaja/AnimateCommons.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
+    "gulp-documentation": "^2.2.0",
+    "gulp-insert": "^0.5.0",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0",
     "require-dir": "^0.3.0"

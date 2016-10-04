@@ -1,8 +1,6 @@
 ////////////////////////////////////////////////////
 // Animate Commons
-// First draft
 ////////////////////////////////////////////////////
-
 (function (window) {
 
   // Load only once
@@ -13,6 +11,11 @@
   // Main Class
   ////////////////////////////////////////////////////
   ////////////////////////////////////////////////////
+
+   /**
+   * AnimateCommons
+   * @module AnimateCommons
+   */
   var AnimateCommons = window.AnimateCommons = function (context) {
     this.context = context;
   }
@@ -116,7 +119,7 @@
 
     /**
      * Get symbol definition (name of symbol definition in library)
-     * currently we will only support the default lib (window.lib)
+     * @param {Object} lib - The library object (defaults to window.lib)
      * @returns {String} Symbol definition
      */
     getSymbolDefinitionName: function(lib) {
@@ -165,7 +168,10 @@
   // Helper
   ////////////////////////////////////////////////////
   ////////////////////////////////////////////////////
-
+  /**
+   * AC_Static
+   * @module AC_Static
+   */
   var AC = window.AC = function (context) {
     return new AnimateCommons(context);
   }
@@ -179,12 +185,15 @@
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
   /**
+   * @private
    * @property {Object} Internal map with all available compositions
    */
   AC._compositions = {};
   /**
    * Get composition
+   * @memberof AC_Static
    * @param  {Symbol} sym Any symbol of the composition
    * @return {AC.Composition} The composition containing the symbol
    */
@@ -208,6 +217,11 @@
   // Mobile helper
   ////////////////////////////////////////////////////
 
+  /**
+   * Detect if running on mobile device
+   * @memberof AC_Static
+   * @return {Boolean} true if composition is running on mobile device, false if not
+   */
   AC.isMobile = function () {
     return navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/iPhone|iPad|iPod/i) || navigator.userAgent.match(/Opera Mini/i) || navigator.userAgent.match(/IEMobile/i) || false;
   };
@@ -219,6 +233,7 @@
   /**
    * Get device pixel ratio (e.g. highDPI/retina)
    * Inspired by Tyson Matanich (License: MIT)
+   * @memberof AC_Static
    * @returns {Integer} The current device pixel ratio
    */
   AC.getDevicePixelRatio = function () {
@@ -245,6 +260,7 @@
   /**
    * Apply defaults to options
    * If option already sets a value the default value will be discarded
+   * @memberof AC_Static
    * @example Usage
    * someFunc(options) {
    *   options = AC.applyDefaults(options, {
@@ -267,23 +283,28 @@
   /**
    * Destroy child
    * Remove from display list and remove all event listener
+   * @memberof AC_Static
    * @example Usage
    * if (this.currentScene) {
    *   AC.destroyChild(this.currentScene);
    *  }
-   * @param {object} options The options object
+   * @param {Symbol} sym - The child to be destroyed
    */
   AC.destroyChild = function(sym) {
     sym.removeAllChildren();
     sym.removeAllEventListeners();
     sym.parent && sym.parent.removeChild(sym);
     sym = null;
-    delete sym;
+    //delete sym;
     //@TODO: Recursion to remove all sub children and decouple all Event Listeners
   };
 
   /**
    * Get all symbol definitions of library
+   *
+   * Returns an object with symbol definition names as keys and symbol definitions (class) as value
+   * @memberof AC_Static
+   * @param {Object} lib - The library (defaults to window.lib)
    */
   AC.getSymbolDefinitions = function(lib) {
     lib = lib ? lib : window.lib;
@@ -291,7 +312,6 @@
     for (var symDefName in lib) {
       if ( lib.hasOwnProperty( symDefName ) ) {
         var symDef = lib[symDefName];
-        //console.log('symDefName: ', symDefName);
         // Filter all properties, that are valid Symbol Definitions
         if ( typeof(symDef) === 'function' && symDef.prototype.timeline && Object.getPrototypeOf(symDef) == Object.getPrototypeOf(createjs.MovieClip) ) {
           result[symDefName] = symDef;
@@ -308,6 +328,7 @@
 
   /**
    * Throttle helper (throttle function calls)
+   * @memberof AC_Static
    * @param  {Function} fn         [description]
    * @param  {[type]}   threshhold [description]
    * @param  {[type]}   scope      [description]

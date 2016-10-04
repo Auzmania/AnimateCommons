@@ -2,9 +2,15 @@
 // Adaptive Layout
 ////////////////////////////////////////////////////
 (function (AC, AnimateCommons) {
+
+  /**
+   * AdaptiveLayout
+   * @namespace AdaptiveLayout
+   */
   AC.AdaptiveLayout = {
     /**
      * Setup a flexible Layout
+     * 
      * Call this function from Stage to setup a flexible layout with the following options:
      * + vertically and/or horizontally center
      * + max width and/or height
@@ -46,6 +52,7 @@
 
       /**
        * Find available layouts in library and parse layout/breakpoint information
+       * @private
        * @return {[type]} [description]
        */
       function findLayouts() {

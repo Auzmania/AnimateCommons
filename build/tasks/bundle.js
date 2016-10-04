@@ -1,7 +1,9 @@
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
+var gulp = require('gulp'),
+    concat = require('gulp-concat'),
+    uglify = require('gulp-uglify'),
+    rename = require('gulp-rename'),
+    insert = require('gulp-insert'),
+    globals = require('../globals.js');
 
 var bundles = require('../bundles.js');
 
@@ -10,8 +12,10 @@ gulp.task('bundle-default', function() {
     return gulp
       .src(bundles.default.includes)
         .pipe(concat(bundles.default.filename))
+        .pipe(insert.prepend(globals.license+'\n'))
         .pipe(gulp.dest(bundles.default.dest))
         .pipe(uglify())
+        .pipe(insert.prepend(globals.license+'\n'))
         .pipe(rename(bundles.default.filename.replace('.js', '.min.js')))
         .pipe(gulp.dest(bundles.default.dest))
       ;
@@ -22,21 +26,11 @@ gulp.task('bundle-debug', function() {
     return gulp
       .src(bundles.debug.includes)
         .pipe(concat(bundles.debug.filename))
+        .pipe(insert.prepend(globals.license+'\n'))
         .pipe(gulp.dest(bundles.debug.dest))
         .pipe(uglify())
+        .pipe(insert.prepend(globals.license+'\n'))
         .pipe(rename(bundles.debug.filename.replace('.js', '.min.js')))
         .pipe(gulp.dest(bundles.debug.dest))
-      ;
-});
-
-// Task: Bundle commercial
-gulp.task('bundle-commercial', function() {
-    return gulp
-      .src(bundles.commercial.includes)
-        .pipe(concat(bundles.commercial.filename))
-        .pipe(gulp.dest(bundles.commercial.dest))
-        .pipe(uglify())
-        .pipe(rename(bundles.commercial.filename.replace('.js', '.min.js')))
-        .pipe(gulp.dest(bundles.commercial.dest))
       ;
 });

@@ -2,6 +2,13 @@
 // Composition VO
 ////////////////////////////////////////////////////
 (function (AC, AnimateCommons) {
+
+  /**
+   * Composition
+   *
+   * Main Composition object
+   * @module Composition
+   */
   AC.Composition = function (options) {
     this.id = options.id;
     this.canvas = options.canvas;

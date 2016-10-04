@@ -1,11 +1,10 @@
-// version
-
-var version = '0.8.0';
+// Globals
+var globals = require('./globals.js');
 
 module.exports = {
   default: {
-    dest: "dist/"+version,
-    filename: "AnimateCommons."+version+".js",
+    dest: "dist/"+globals.version,
+    filename: "AnimateCommons."+globals.version+".js",
     includes: [
       'src/AnimateCommons.js',
       'src/core/Composition.js',
@@ -14,8 +13,8 @@ module.exports = {
     ]
   },
   debug: {
-    dest: "dist/"+version,
-    filename: "AnimateCommons."+version+".debug.js",
+    dest: "dist/"+globals.version,
+    filename: "AnimateCommons."+globals.version+".debug.js",
     includes: [
       'src/AnimateCommons.js',
       'src/core/Composition.js',
