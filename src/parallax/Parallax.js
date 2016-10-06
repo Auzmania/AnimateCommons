@@ -12,6 +12,7 @@
   AC.Parallax = {
     /**
      * Setup Parallax
+     * 
      * Call this function from Stage to setup a Parallax effect with the following options:
      * @param  {AC} sym Animate Sybmbol
      * @param  {Object} options
