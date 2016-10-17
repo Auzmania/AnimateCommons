@@ -9,6 +9,7 @@ module.exports = {
       'src/AnimateCommons.js',
       'src/core/Composition.js',
       'src/layout/AdaptiveLayout.js',
+      'src/layout/FlexibleLayout.js',
       'src/parallax/Parallax.js',
     ]
   },
@@ -19,6 +20,7 @@ module.exports = {
       'src/AnimateCommons.js',
       'src/core/Composition.js',
       'src/layout/AdaptiveLayout.js',
+      'src/layout/FlexibleLayout.js',
       'src/parallax/Parallax.js',
       'src/debug/Debug.js',
     ]

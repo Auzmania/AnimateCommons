@@ -281,23 +281,97 @@
   };
 
   /**
-   * Destroy child
-   * Remove from display list and remove all event listener
+   * Destroy symbol
    * @memberof AC_Static
+   *
+   *
+   * (W IP: Work in progress)
+   * Remove from display list and remove all event listeners to enable garbage collection
+   *
+   * The problem:
+   * Removing symbol instances and garbage collecting them is currently not possible in Animate CC.
+   * There are several aspects (references) that prevent garbage collection:
+   * 1) reference in parent.ID
+   * 2) reference in parent.children[N]
+   * 3) reference in tween saved in parent.timeline...
+   * 4) optionally event Listeners
+   * 5) (custom references that were added manually. these have to be removed manually)
+   * N OTES:
+   * 2) might not be true if timeline has empty frame for the time of querying
+   * 3) IS STILL true if tween is completed but timeline has empty frame for the time of querying
+   * Use Chrome Dev Tools -> Profiler to see result of garbage collection and in case of failing where references still exits
+   *
+   * @QUESTION: What if parent w/ timeline gets deleted? Does problem still exist?
+   *
    * @example Usage
-   * if (this.currentScene) {
-   *   AC.destroyChild(this.currentScene);
-   *  }
+   * AC.destroyC(this.currentScene, this);
    * @param {Symbol} sym - The child to be destroyed
+   * @param {Symbol} parent - The parent symbol (optional, needed only if instance is already removed from display list and sym.parent is no longer available)
    */
-  AC.destroyChild = function(sym) {
-    sym.removeAllChildren();
-    sym.removeAllEventListeners();
-    sym.parent && sym.parent.removeChild(sym);
-    sym = null;
-    //delete sym;
-    //@TODO: Recursion to remove all sub children and decouple all Event Listeners
+  AC.destroy = function(sym, parent) {
+
+  	//console.log( "children: ", sym.children );
+  	//console.log("sym id", AC(sym).getId());
+
+  	parent =  sym.parent || parent;
+
+  	// Remove tweens from parent (tweens hold references to symbols and prevent garbage collection)
+  	if (parent) {
+
+  		var timeline = parent.timeline;
+  		//console.log("timeline", timeline);
+  		for (var t_i=0; t_i<timeline._tweens.length; t_i++) {
+  			var tween = timeline._tweens[t_i];
+  			//console.log("Tween: ", tween);
+  			if (tween.target == sym) {
+  				//console.log(" 2 matching tween found...", tween.target);
+  				timeline.removeTween(tween);
+  				tween.removeAllEventListeners();
+  				tween.removeAllTweens && tween.removeAllTweens();
+  				tween.target = null;
+  				tween = null;
+  			}
+  			timeline[t_i] = null;
+  			//console.log(" 2 removed from timeline: ", t_i);
+  		}
+
+  	}
+
+  	// Remove childs recursively
+  	for (var i=0; i<sym.children.length; i++) {
+  		var child = sym.children[i];
+  		//console.log("child: ", child);
+
+  		// Recursive
+  		child.children && child.children.length && AC.destroy(child, null);
+
+  		// Destroy if end of line
+  		child.removeAllEventListeners();
+  		child.removeAllChildren && child.removeAllChildren(); // Does this make sense? there shouldn't be any children here
+  		child.parent && child.parent.removeChild(child);
+  		child = null;
+  		//delete child; // PREVENTS DOCUMENTATION
+  	}
+
+  	// Remove id on parent
+  	if (parent) {
+  		// id cannot be calculated if sym is not in display list anymore (e.g. track ended on timeline)
+  		var id = AC(sym).getId();
+  		if (!id) {
+  		  for (var p in parent) {
+    			if (parent.hasOwnProperty(p)) {
+    			  if (parent[p] === sym) {
+    				  id = p;
+    			  }
+    			}
+  		  }
+  		}
+  		//console.log("removing: ", id, ", from: ", parent);
+  		parent.removeChild(sym);
+  		parent[ id ] = null;
+  	}
   };
+
 
   /**
    * Get all symbol definitions of library

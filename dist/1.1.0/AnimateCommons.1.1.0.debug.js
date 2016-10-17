@@ -1,4 +1,4 @@
-/* Animate Commons v0.9.0 - Dirty Little Helpers for Adobe Animate CC +++ Visit animatecommons.io for documentation, updates and examples +++ Copyright (c) 2016 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.*/
+/* Animate Commons v1.1.0 - Dirty Little Helpers for Adobe Animate CC +++ Visit animatecommons.io for documentation, updates and examples +++ Copyright (c) 2016 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.*/
 
 ////////////////////////////////////////////////////
 // Animate Commons
@@ -283,23 +283,97 @@
   };
 
   /**
-   * Destroy child
-   * Remove from display list and remove all event listener
+   * Destroy symbol
    * @memberof AC_Static
+   *
+   *
+   * (W IP: Work in progress)
+   * Remove from display list and remove all event listeners to enable garbage collection
+   *
+   * The problem:
+   * Removing symbol instances and garbage collecting them is currently not possible in Animate CC.
+   * There are several aspects (references) that prevent garbage collection:
+   * 1) reference in parent.ID
+   * 2) reference in parent.children[N]
+   * 3) reference in tween saved in parent.timeline...
+   * 4) optionally event Listeners
+   * 5) (custom references that were added manually. these have to be removed manually)
+   * N OTES:
+   * 2) might not be true if timeline has empty frame for the time of querying
+   * 3) IS STILL true if tween is completed but timeline has empty frame for the time of querying
+   * Use Chrome Dev Tools -> Profiler to see result of garbage collection and in case of failing where references still exits
+   *
+   * @QUESTION: What if parent w/ timeline gets deleted? Does problem still exist?
+   *
    * @example Usage
-   * if (this.currentScene) {
-   *   AC.destroyChild(this.currentScene);
-   *  }
+   * AC.destroyC(this.currentScene, this);
    * @param {Symbol} sym - The child to be destroyed
+   * @param {Symbol} parent - The parent symbol (optional, needed only if instance is already removed from display list and sym.parent is no longer available)
    */
-  AC.destroyChild = function(sym) {
-    sym.removeAllChildren();
-    sym.removeAllEventListeners();
-    sym.parent && sym.parent.removeChild(sym);
-    sym = null;
-    //delete sym;
-    //@TODO: Recursion to remove all sub children and decouple all Event Listeners
+  AC.destroy = function(sym, parent) {
+
+  	//console.log( "children: ", sym.children );
+  	//console.log("sym id", AC(sym).getId());
+
+  	parent =  sym.parent || parent;
+
+  	// Remove tweens from parent (tweens hold references to symbols and prevent garbage collection)
+  	if (parent) {
+
+  		var timeline = parent.timeline;
+  		//console.log("timeline", timeline);
+  		for (var t_i=0; t_i<timeline._tweens.length; t_i++) {
+  			var tween = timeline._tweens[t_i];
+  			//console.log("Tween: ", tween);
+  			if (tween.target == sym) {
+  				//console.log(" 2 matching tween found...", tween.target);
+  				timeline.removeTween(tween);
+  				tween.removeAllEventListeners();
+  				tween.removeAllTweens && tween.removeAllTweens();
+  				tween.target = null;
+  				tween = null;
+  			}
+  			timeline[t_i] = null;
+  			//console.log(" 2 removed from timeline: ", t_i);
+  		}
+
+  	}
+
+  	// Remove childs recursively
+  	for (var i=0; i<sym.children.length; i++) {
+  		var child = sym.children[i];
+  		//console.log("child: ", child);
+
+  		// Recursive
+  		child.children && child.children.length && AC.destroy(child, null);
+
+  		// Destroy if end of line
+  		child.removeAllEventListeners();
+  		child.removeAllChildren && child.removeAllChildren(); // Does this make sense? there shouldn't be any children here
+  		child.parent && child.parent.removeChild(child);
+  		child = null;
+  		//delete child; // PREVENTS DOCUMENTATION
+  	}
+
+  	// Remove id on parent
+  	if (parent) {
+  		// id cannot be calculated if sym is not in display list anymore (e.g. track ended on timeline)
+  		var id = AC(sym).getId();
+  		if (!id) {
+  		  for (var p in parent) {
+    			if (parent.hasOwnProperty(p)) {
+    			  if (parent[p] === sym) {
+    				  id = p;
+    			  }
+    			}
+  		  }
+  		}
+  		//console.log("removing: ", id, ", from: ", parent);
+  		parent.removeChild(sym);
+  		parent[ id ] = null;
+  	}
   };
+
 
   /**
    * Get all symbol definitions of library
@@ -605,6 +679,105 @@
 })(window.AC, window.AnimateCommons);
 
 ////////////////////////////////////////////////////
+// Flexible Layout
+////////////////////////////////////////////////////
+(function (AC, AnimateCommons) {
+
+  /**
+   * Flexible Layout
+   * @namespace FlexibleLayout
+   */
+  AC.FlexibleLayout = {
+    /**
+     * Setup a flexible Layout
+     * Call this function from Stage to setup a flexible layout with the following options:
+     * + vertically and/or horizontally center
+     * + max width and/or height
+     * @param  {AC} sym Animate Sybmbol
+     * @param  {Object} options
+     * @param  {Number} options.maxWidth Max content width in px. Leave blank or use null for not limitation (default: null)
+     * @param  {Number} options.maxHeight Max content height in px. Leave blank or use null for not limitation (default: null)
+     * @param  {Number} options.originX Positioning x origin in percent (default: 50)
+     * @param  {Number} options.originY Positioning y origin in percent (default: 50)
+     */
+    setup: function(sym, options) {
+
+      //--------------------------------------------------
+      // Options and Defaults
+      //--------------------------------------------------
+      options = AC.applyDefaults(options, {
+        lib: window.lib,
+        maxWidth: null,
+        maxHeight: null,
+        originX: 50, // percent
+        originY: 50 // percent
+      });
+
+      //--------------------------------------------------
+      // Prepare
+      //--------------------------------------------------
+      var symAC = AC( AC(sym).getStage().context.children[0] );
+      var canvas = symAC.getCanvas();
+      var dpr = AC.getDevicePixelRatio();
+      var initial = {
+        compW: options.lib.properties.width,
+        compH: options.lib.properties.height,
+      };
+
+      //--------------------------------------------------
+      // Recalculate layout
+      //--------------------------------------------------
+      var calcLayout = function() {
+        //--------------------------------------------------
+        // Calc new composition dimensions and scaleFactor
+        //--------------------------------------------------
+        symAC.getCanvas().parentElement.style.width = "100%";
+        // symAC.getCanvas().parentElement.style.height = "200px";
+        var newCompW = parseInt(window.getComputedStyle(symAC.getCanvas().parentElement.parentElement).width);
+        var newCompH = parseInt(window.getComputedStyle(symAC.getCanvas().parentElement.parentElement).height);
+        var scaleFactor = (newCompW / initial.compW > newCompH / initial.compH) ? newCompH / initial.compH : newCompW / initial.compW;
+
+
+        //--------------------------------------------------
+        // Update Canvas dimensions
+        //--------------------------------------------------
+        canvas.style.width = newCompW + "px";
+        canvas.style.height = newCompH + "px";
+        canvas.setAttribute('width', newCompW * dpr + "px");
+        canvas.setAttribute('height', newCompH * dpr + "px");
+
+        //--------------------------------------------------
+        // Update content dimensions/position
+        //--------------------------------------------------
+        // Set content scale factor to smaller value (w vs h)
+        var contentScaleFactor = Math.min(
+          (options.maxWidth && initial.compW * scaleFactor > options.maxWidth) ? options.maxWidth / initial.compW : scaleFactor,
+          (options.maxHeight && initial.compH * scaleFactor > options.maxHeight) ? options.maxHeight / initial.compH : scaleFactor
+        );
+        // Scale content
+        symAC.context.scaleX = symAC.context.scaleY = contentScaleFactor;
+        //console.log('contentScaleFactor', contentScaleFactor);
+
+        // Apply origin
+        symAC.context.x = Math.round( (0 - ( (initial.compW * contentScaleFactor) - newCompW ) ) * (options.originX/100) );
+        symAC.context.y = Math.round( (0 - ( (initial.compH * contentScaleFactor) - newCompH ) ) * (options.originY/100) );
+      }
+
+      //--------------------------------------------------
+      // Init
+      //--------------------------------------------------
+      // Setup resize listener
+      // @TODO: consider throttling here
+      window.addEventListener('resize', function(evt) {
+        calcLayout();
+      });
+      // Initial call
+      calcLayout();
+    }
+  }
+})(window.AC, window.AnimateCommons);
+
+////////////////////////////////////////////////////
 // Parallax
 ////////////////////////////////////////////////////
 
@@ -618,7 +791,7 @@
   AC.Parallax = {
     /**
      * Setup Parallax
-     * 
+     *
      * Call this function from Stage to setup a Parallax effect with the following options:
      * @param  {AC} sym Animate Sybmbol
      * @param  {Object} options
@@ -695,6 +868,10 @@
       // @TODO: Implement feature check
       if (AC.isMobile()) {
         window.addEventListener('deviceorientation', AC.throttle(function(evt) {
+          if (!evt.beta) {
+            return
+          }
+
           var precision = 1;
           //var alpha = evt.alpha.toFixed(precision);
           var beta = evt.beta.toFixed(precision);
@@ -711,6 +888,62 @@
             layer.sym.x = layer.initX + (offset / layer.factor);
           }
         }, 10));
+      }
+    }
+  }
+})(window.AC, window.AnimateCommons);
+
+////////////////////////////////////////////////////
+// Debug
+////////////////////////////////////////////////////
+(function (AC, AnimateCommons) {
+
+  /**
+   * Debug
+   * @namespace Debug
+   */
+  AC.Debug = {
+
+    /**
+     * Add FPS Meter
+     * @param {Symbol} sym Any symbol of composition
+     * @param {Integer} freq Update frequency for stats (ms) (default: 1000)
+     */
+    enableFpsMeter: function(sym, freq) {
+
+      var symAC = AC(sym);
+      var comp = symAC.getComposition();
+
+      // Update frequency for stats (ms)
+      var _statsFreq = freq || 1000;
+
+      if (!comp.get("fpsStats")) {
+
+        // stats.js - http://github.com/mrdoob/stats.js
+        // modified by simonwidjaja: added _statsFreq to adjust update frequence
+        var Stats=function(){function f(a,e,b){a=document.createElement(a);a.id=e;a.style.cssText=b;return a}function l(a,e,b){var c=f("div",a,"padding:0 0 3px 3px;text-align:left;background:"+b),d=f("div",a+"Text","font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px;color:"+e);d.innerHTML=a.toUpperCase();c.appendChild(d);a=f("div",a+"Graph","width:74px;height:30px;background:"+e);c.appendChild(a);for(e=0;74>e;e++)a.appendChild(f("span","","width:1px;height:30px;float:left;opacity:0.9;background:"+
+        b));return c}function m(a){for(var b=c.children,d=0;d<b.length;d++)b[d].style.display=d===a?"block":"none";n=a}function p(a,b){a.appendChild(a.firstChild).style.height=Math.min(30,30-30*b)+"px"}var q=self.performance&&self.performance.now?self.performance.now.bind(performance):Date.now,k=q(),r=k,t=0,n=0,c=f("div","stats","width:80px;opacity:0.9;cursor:pointer");c.addEventListener("mousedown",function(a){a.preventDefault();m(++n%c.children.length)},!1);var d=0,u=Infinity,v=0,b=l("fps","#0ff","#002"),
+        A=b.children[0],B=b.children[1];c.appendChild(b);var g=0,w=Infinity,x=0,b=l("ms","#0f0","#020"),C=b.children[0],D=b.children[1];c.appendChild(b);if(self.performance&&self.performance.memory){var h=0,y=Infinity,z=0,b=l("mb","#f08","#201"),E=b.children[0],F=b.children[1];c.appendChild(b)}m(n);return{REVISION:14,domElement:c,setMode:m,begin:function(){k=q()},end:function(){var a=q();g=a-k;w=Math.min(w,g);x=Math.max(x,g);C.textContent=(g|0)+" MS ("+(w|0)+"-"+(x|0)+")";p(D,g/200);t++;if(a>r+_statsFreq&&(d=Math.round(1E3*
+        t/(a-r)),u=Math.min(u,d),v=Math.max(v,d),A.textContent=d+" FPS ("+u+"-"+v+")",p(B,d/100),r=a,t=0,void 0!==h)){var b=performance.memory.usedJSHeapSize,c=performance.memory.jsHeapSizeLimit;h=Math.round(9.54E-7*b);y=Math.min(y,h);z=Math.max(z,h);E.textContent=h+" MB ("+y+"-"+z+")";p(F,b/c)}return a},update:function(){k=this.end()}}};"object"===typeof module&&(module.exports=Stats);
+
+        // Init Stats
+        var stats = new Stats();
+        stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '0px';
+        stats.domElement.style.top = '0px';
+        document.body.appendChild( stats.domElement );
+
+        var originalHandleEvent = comp.stage.context.stage.handleEvent;
+
+        function hijackedHandleEvent(evt) {
+          stats.begin();
+          originalHandleEvent.call(this, evt);
+          stats.end();
+        }
+
+        comp.stage.context.stage.handleEvent = hijackedHandleEvent.bind( comp.stage.context.stage );
+        comp.set("fpsStats", true);
       }
     }
   }

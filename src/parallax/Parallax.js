@@ -12,7 +12,7 @@
   AC.Parallax = {
     /**
      * Setup Parallax
-     * 
+     *
      * Call this function from Stage to setup a Parallax effect with the following options:
      * @param  {AC} sym Animate Sybmbol
      * @param  {Object} options
@@ -89,6 +89,10 @@
       // @TODO: Implement feature check
       if (AC.isMobile()) {
         window.addEventListener('deviceorientation', AC.throttle(function(evt) {
+          if (!evt.beta) {
+            return
+          }
+
           var precision = 1;
           //var alpha = evt.alpha.toFixed(precision);
           var beta = evt.beta.toFixed(precision);

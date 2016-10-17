@@ -431,7 +431,7 @@
   AC.AdaptiveLayout = {
     /**
      * Setup a flexible Layout
-     * 
+     *
      * Call this function from Stage to setup a flexible layout with the following options:
      * + vertically and/or horizontally center
      * + max width and/or height
@@ -554,8 +554,6 @@
 
 
         if (newBreakpoint != currentBreakpoint) {
-          // console.log("");
-          // console.log("==============");
           // console.log("BP CHANGE - minW: ", newBreakpoint.minW);
           // @TODO: Dispatch some kind of event
           // Remember new breakpoint
@@ -578,12 +576,7 @@
             symAC.context.removeChild(oldLayouts[i]);
           }
 
-          // Remove children
-          //symAC.context.removeAllChildren();
-
-          //var layoutSym = symAC.context.addChild( new lib[newBreakpoint.sym] );
           var layoutSym = symAC.context.addChild( new newBreakpoint.sym() );
-          //console.log("ADDED. sym:", AC(layoutSym).getSymbolDefinitionName(options.lib));
           // Center layout sym
           //layoutSym.x = initial.compW/2 - layoutSym.nominalBounds.width/2;
           layoutSym.x = initial.compW/2 - newBreakpoint.minW/2;
@@ -593,10 +586,6 @@
             (typeof (layoutSym.activevateLayout) === "function") && layoutSym.activevateLayout();
           }, 100);
         }
-        //console.log('newBreakpoint:', newBreakpoint);
-
-
-
 
       }
 
