@@ -42,11 +42,10 @@
       // Prepare
       //--------------------------------------------------
       var symAC = AC( AC(sym).getStage().context.children[0] );
-      var canvas = symAC.getCanvas();
       var dpr = AC.getDevicePixelRatio();
       var initial = {
-        compW: parseInt(canvas.style.width),
-        compH: parseInt(canvas.style.height)
+        compW: options.lib.properties.width,
+        compH: options.lib.properties.height,
       };
       var currentBreakpoint;
 
