@@ -287,7 +287,7 @@
    * @memberof AC_Static
    *
    *
-   * (W IP: Work in progress)
+   * (WIP: Work in progress)
    * Remove from display list and remove all event listeners to enable garbage collection
    *
    * The problem:
@@ -298,7 +298,7 @@
    * 3) reference in tween saved in parent.timeline...
    * 4) optionally event Listeners
    * 5) (custom references that were added manually. these have to be removed manually)
-   * N OTES:
+   * NOTES:
    * 2) might not be true if timeline has empty frame for the time of querying
    * 3) IS STILL true if tween is completed but timeline has empty frame for the time of querying
    * Use Chrome Dev Tools -> Profiler to see result of garbage collection and in case of failing where references still exits

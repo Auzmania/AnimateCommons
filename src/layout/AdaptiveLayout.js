@@ -76,8 +76,16 @@
         //--------------------------------------------------
         // Calc new composition dimensions and scaleFactor
         //--------------------------------------------------
-        var newCompW = parseInt(window.getComputedStyle(symAC.getCanvas().parentElement).width);
-        var newCompH = parseInt(window.getComputedStyle(symAC.getCanvas().parentElement).height);
+        //#BUGFIX:AN2017-WRAPPER
+        var parent = symAC.getCanvas().parentElement;
+        if (symAC.getCanvas().parentElement.id == 'animation_container') {
+          parent = parent.parentElement;
+        }
+        //#BUGFIX:AN2017-WRAPPEREND
+
+        var newCompW = parseInt(window.getComputedStyle(parent).width);
+        var newCompH = parseInt(window.getComputedStyle(parent).height);
+
         var scaleFactor = (newCompW / initial.compW > newCompH / initial.compH) ? newCompH / initial.compH : newCompW / initial.compW;
 
         //--------------------------------------------------

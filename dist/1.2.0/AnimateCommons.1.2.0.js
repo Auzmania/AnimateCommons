@@ -1,4 +1,4 @@
-/* Animate Commons v1.1.0 - Dirty Little Helpers for Adobe Animate CC +++ Visit animatecommons.io for documentation, updates and examples +++ Copyright (c) 2016 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.*/
+/* Animate Commons v1.2.0 - Dirty Little Helpers for Adobe Animate CC +++ Visit animatecommons.io for documentation, updates and examples +++ Copyright (c) 2016 by Simon Widjaja +++ Distributed under the terms of the MIT license (http://www.opensource.org/licenses/mit-license.html) +++ This notice shall be included in all copies or substantial portions of the Software.*/
 
 ////////////////////////////////////////////////////
 // Animate Commons
@@ -389,7 +389,13 @@
       if ( lib.hasOwnProperty( symDefName ) ) {
         var symDef = lib[symDefName];
         // Filter all properties, that are valid Symbol Definitions
-        if ( typeof(symDef) === 'function' && symDef.prototype.timeline && Object.getPrototypeOf(symDef) == Object.getPrototypeOf(createjs.MovieClip) ) {
+        // Pre Animate2017 version
+        //if ( typeof(symDef) === 'function' && symDef.prototype.timeline && Object.getPrototypeOf(symDef) == Object.getPrototypeOf(createjs.MovieClip) ) {
+        //  result[symDefName] = symDef;
+        //}
+        // New Animate2017 version
+        if ( typeof(symDef) === 'function' && symDef.prototype.nominalBounds && Object.getPrototypeOf(symDef) == Object.getPrototypeOf(createjs.MovieClip)) {
+          //console.log("[ getSymbolDefinitions() ] found symbol definition: "+symDefName);
           result[symDefName] = symDef;
         }
       }
@@ -571,8 +577,16 @@
         //--------------------------------------------------
         // Calc new composition dimensions and scaleFactor
         //--------------------------------------------------
-        var newCompW = parseInt(window.getComputedStyle(symAC.getCanvas().parentElement).width);
-        var newCompH = parseInt(window.getComputedStyle(symAC.getCanvas().parentElement).height);
+        //#BUGFIX:AN2017-WRAPPER
+        var parent = symAC.getCanvas().parentElement;
+        if (symAC.getCanvas().parentElement.id == 'animation_container') {
+          parent = parent.parentElement;
+        }
+        //#BUGFIX:AN2017-WRAPPEREND
+
+        var newCompW = parseInt(window.getComputedStyle(parent).width);
+        var newCompH = parseInt(window.getComputedStyle(parent).height);
+
         var scaleFactor = (newCompW / initial.compW > newCompH / initial.compH) ? newCompH / initial.compH : newCompW / initial.compW;
 
         //--------------------------------------------------
