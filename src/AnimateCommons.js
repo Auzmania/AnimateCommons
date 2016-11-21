@@ -8,6 +8,32 @@
 
   ////////////////////////////////////////////////////
   ////////////////////////////////////////////////////
+  // Global tweaks
+  ////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////
+
+  // Prevent canvas from flashing/flicker on touch
+  // Inspired by https://davidwalsh.name/add-rules-stylesheets
+  function addCSSRule(sheet, selector, rules, index) {
+  	if("insertRule" in sheet) {
+  		sheet.insertRule(selector + "{" + rules + "}", index);
+  	}
+  	else if("addRule" in sheet) {
+  		sheet.addRule(selector, rules, index);
+  	}
+  }
+  var sheet = (function() {
+    var style = document.createElement("style");
+    style.appendChild(document.createTextNode("")); // WebKit hack :(
+    document.head.appendChild(style);
+    return style.sheet;
+  })();
+
+  addCSSRule(sheet, "canvas", "-webkit-tap-highlight-color: rgba(0,0,0,0);");
+
+
+  ////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////
   // Main Class
   ////////////////////////////////////////////////////
   ////////////////////////////////////////////////////

@@ -27,8 +27,8 @@
       //--------------------------------------------------
       options = AC.applyDefaults(options, {
         lib: window.lib,
-        maxWidth: null,
-        maxHeight: null,
+        maxWidth: null,     // NOT YET IMPLEMENTED
+        maxHeight: null,    // NOT YET IMPLEMENTED
         originX: 50, // percent
         originY: 50 // percent
       });
@@ -53,6 +53,8 @@
         //--------------------------------------------------
         symAC.getCanvas().parentElement.style.width = "100%";
         // symAC.getCanvas().parentElement.style.height = "200px";
+        // Currently we only support the default An2017 wrapper structure) thus parentElement.parentElement
+        // @TODO: Make this more flexible to support cleaner custom wrapper structures
         var newCompW = parseInt(window.getComputedStyle(symAC.getCanvas().parentElement.parentElement).width);
         var newCompH = parseInt(window.getComputedStyle(symAC.getCanvas().parentElement.parentElement).height);
         var scaleFactor = (newCompW / initial.compW > newCompH / initial.compH) ? newCompH / initial.compH : newCompW / initial.compW;
