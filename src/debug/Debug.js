@@ -15,7 +15,6 @@
      * @param {Integer} freq Update frequency for stats (ms) (default: 1000)
      */
     enableFpsMeter: function(sym, freq) {
-
       var symAC = AC(sym);
       var comp = symAC.getComposition();
 
@@ -34,10 +33,11 @@
         // Init Stats
         var stats = new Stats();
         stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
-        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.position = 'relative';
         stats.domElement.style.left = '0px';
-        stats.domElement.style.top = '0px';
-        document.body.appendChild( stats.domElement );
+        stats.domElement.style.top = '-100%';
+        //document.body.appendChild( stats.domElement );
+        comp.canvas.parentElement.appendChild( stats.domElement );
 
         var originalHandleEvent = comp.stage.context.stage.handleEvent;
 
